@@ -43,11 +43,24 @@ jobs:
             echo "project_ref=sifdqhfwpfbhqvwopgrx" >> $GITHUB_OUTPUT
           fi
 
-
       - name: Link Supabase project
         run: |
           supabase link --project-ref ${{ steps.set-project.outputs.project_ref }}
 
+      - name: Set DB password based on branch
+        id: db-pass
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "password=${SUPABASE_DB_PASSWORD_PRD}" >> $GITHUB_OUTPUT
+          else
+            echo "password=${SUPABASE_DB_PASSWORD_STG}" >> $GITHUB_OUTPUT
+          fi
+        env:
+          SUPABASE_DB_PASSWORD_PRD: ${{ secrets.SUPABASE_DB_PASSWORD_PRD }}
+          SUPABASE_DB_PASSWORD_STG: ${{ secrets.SUPABASE_DB_PASSWORD_STG }}
+
       - name: Push schema to Supabase
         run: |
-          supabase db push
+          supabase db push --config ${{ steps.set-config.outputs.config }}
+        env:
+          SUPABASE_DB_PASSWORD: ${{ steps.db-pass.outputs.password }}
