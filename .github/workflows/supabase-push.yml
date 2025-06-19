@@ -14,8 +14,12 @@ jobs:
 
       - name: Install Supabase CLI (stable)
         run: |
-          VERSION=$(curl -s https://api.github.com/repos/supabase/cli/releases/latest | grep tag_name | cut -d '"' -f 4)
-          curl -L "https://github.com/supabase/cli/releases/download/${VERSION}/supabase_${VERSION#v}_linux_amd64.tar.gz" -o supabase.tar.gz
+          VERSION=$(curl -s https://api.github.com/repos/supabase/cli/releases/latest | jq -r .tag_name)
+          DOWNLOAD_URL="https://github.com/supabase/cli/releases/download/${VERSION}/supabase_${VERSION#v}_linux_amd64.tar.gz"
+
+          echo "Downloading: $DOWNLOAD_URL"
+          curl -L "$DOWNLOAD_URL" -o supabase.tar.gz
+
           tar -xzf supabase.tar.gz
           sudo mv supabase /usr/local/bin/
           supabase --version
@@ -36,6 +40,15 @@ jobs:
             echo "config=.supabase/config.stg.toml" >> $GITHUB_OUTPUT
           fi
 
+      - name: Choose project-ref based on branch
+        id: set-project
+        run: |
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "project_ref=mcuvsygxeajyitdbtecj" >> $GITHUB_OUTPUT
+          else
+            echo "project_ref=sifdqhfwpfbhqvwopgrx" >> $GITHUB_OUTPUT
+          fi
+
       - name: Push schema to Supabase
         run: |
-          supabase db push --project-ref ${{ steps.set-config.outputs.config }}
+          supabase db push --project-ref ${{ steps.set-project.outputs.project_ref }}
