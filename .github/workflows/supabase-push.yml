@@ -17,7 +17,7 @@ jobs:
           curl -L -o supabase.deb https://github.com/supabase/cli/releases/download/v2.26.9/supabase_2.26.9_linux_amd64.deb
           sudo dpkg -i supabase.deb
           supabase --version
-          
+
       - name: Authenticate Supabase CLI
         run: |
           echo "${SUPABASE_ACCESS_TOKEN}" > ~/.supabase-access-token
@@ -43,6 +43,11 @@ jobs:
             echo "project_ref=sifdqhfwpfbhqvwopgrx" >> $GITHUB_OUTPUT
           fi
 
+
+      - name: Link Supabase project
+        run: |
+          supabase link --project-ref ${{ steps.set-project.outputs.project_ref }}
+
       - name: Push schema to Supabase
         run: |
-          supabase db push --project-ref ${{ steps.set-project.outputs.project_ref }}
+          supabase db push
