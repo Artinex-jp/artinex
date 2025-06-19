@@ -41,4 +41,4 @@ jobs:
 
       - name: Push schema to Supabase
         run: |
-          supabase db push --config ${{ steps.set-config.outputs.config }}
+          supabase db push --project-ref ${{ steps.set-config.outputs.config }}
