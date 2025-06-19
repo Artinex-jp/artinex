@@ -12,10 +12,18 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Install Supabase CLI (via .deb)
+      - name: Install Supabase CLI (via zip)
         run: |
-          curl -L -o supabase.deb https://github.com/supabase/cli/releases/download/v1.120.7/supabase_1.120.7_amd64.deb
-          sudo dpkg -i supabase.deb
+          # 最新のリリースタグ取得
+          VERSION=$(curl -s https://api.github.com/repos/supabase/cli/releases/latest | jq -r .tag_name)
+          ZIP_URL="https://github.com/supabase/cli/releases/download/${VERSION}/supabase_${VERSION#v}_linux_amd64.zip"
+          echo "Downloading: $ZIP_URL"
+
+          # ZIP取得と展開
+          curl -L "$ZIP_URL" -o supabase.zip
+          unzip supabase.zip
+          chmod +x supabase
+          sudo mv supabase /usr/local/bin/
           supabase --version
 
       - name: Authenticate Supabase CLI
