@@ -12,11 +12,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Install Supabase CLI (binary)
+      - name: Install Supabase CLI (latest)
         run: |
-          curl -L https://github.com/supabase/cli/releases/download/v1.160.0/supabase_1.160.0_linux_amd64.tar.gz -o supabase.tar.gz
+          curl -sL https://api.github.com/repos/supabase/cli/releases/latest \
+            | grep "browser_download_url.*linux_amd64\.tar\.gz" \
+            | cut -d '"' -f 4 \
+            | xargs curl -L -o supabase.tar.gz
+
           tar -xzf supabase.tar.gz
-          sudo mv supabase /usr/local/bin
+          sudo mv supabase /usr/local/bin/
           supabase --version
 
       - name: Authenticate Supabase CLI
