@@ -61,6 +61,6 @@ jobs:
 
       - name: Push schema to Supabase
         run: |
-          supabase db push --config ${{ steps.set-config.outputs.config }}
+          supabase db push
         env:
           SUPABASE_DB_PASSWORD: ${{ steps.db-pass.outputs.password }}
