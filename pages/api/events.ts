@@ -17,10 +17,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       *,
 			performances (
 				*,
-				eventPlace: eventPlaces (
+				eventPlace: event_places (
 					* 
 				),
-				performanceItem (
+				performance_item (
 					*,
 					item: items (
 						* 
