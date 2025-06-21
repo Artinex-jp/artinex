@@ -26,8 +26,6 @@ export default function HomePage() {
           setLoading(false);
         }
       })();
-
-      console.log(events)
     }, [])
     return (
       <div className="p-6">
