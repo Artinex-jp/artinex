@@ -13,19 +13,20 @@ export default function HomePage() {
   const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-      const fetchEvents = async () => {
+      (async () => {
         try {
           const res = await fetch("/api/events");
+          if (!res.ok) throw new Error("Fetch failed");
           const data = await res.json();
           setEvents(data);
         } catch (error) {
           console.error("Failed to fetch events:", error);
+          setEvents([])
         } finally {
           setLoading(false);
         }
-      }
+      })();
 
-      fetchEvents()
       console.log(events)
     }, [])
     return (
