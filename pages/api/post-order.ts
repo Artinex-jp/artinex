@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON!
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
