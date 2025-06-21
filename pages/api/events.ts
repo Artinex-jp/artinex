@@ -17,6 +17,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       *,
 			performances (
 				*,
+				eventPlace: eventPlaces (
+					* 
+				),
 				performanceItem (
 					*,
 					item: items (
