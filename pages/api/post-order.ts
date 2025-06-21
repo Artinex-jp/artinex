@@ -24,9 +24,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   // 注文作成
   const orderId = uuidv4();
-  const { error: insertOrderError } = await supabase.from("orders").insert([
+  const { data: orderData, error: insertOrderError } = await supabase.from("orders").insert([
     { id: orderId, customer_id: customerData.id, payment_method: paymentMethod, amount_total: amountTotal, created_at: new Date() },
-  ]);
+  ]).select().single();
   if (insertOrderError) return res.status(500).json({ error: insertOrderError.message });
 
   // 注文アイテム作成
@@ -36,10 +36,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     item_id: item.itemId,
     quantity: item.quantity,
   }));
-  
-  const { error: insertItemsError } = await supabase.from("order_item").insert(itemsToInsert);
+
+  const { data: orderItemData, error: insertItemsError } = await supabase.from("order_item").insert(itemsToInsert).select(`
+    *,
+    item: items (
+      *,
+      performanceItem: performance_item (
+        *,
+        performance: performances (
+          *,
+          event: events (
+            *
+          ),
+          eventPlace: event_places (
+            *
+          )
+        )
+      )
+    )
+  `);
   if (insertItemsError) return res.status(500).json({ error: insertItemsError.message });
 
   // Stripe Checkout Session を作成（必要であればここに記述）
-  return res.status(200).json({ success: true });
+  return res.status(200).json({ success: true, order: orderData, customer: customerData,  orderItem: orderItemData});
 }

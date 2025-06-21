@@ -23,12 +23,29 @@ interface EventData {
   }[]
 }
 
+type OrderItem = { itemId: string; quantity: number };
+type ReservationForm = {
+  customer: { name: string; email: string; tel: string };
+  paymentMethod: string;
+  amountTotal: number;
+  orderItem: OrderItem[];
+};
+
 export default function EventDetailPage() {
   const router = useRouter()
   const { id } = router.query
   const [event, setEvent] = useState<EventData | null>(null)
   const [loading, setLoading] = useState(true)
   const [showModal, setShowModal] = useState(false);
+	const [step, setStep] = useState<"form" | "confirm" | "done">("form");
+	const [form, setForm] = useState<ReservationForm>({
+		customer: { name: "", email: "", tel: "" },
+		paymentMethod: "銀行振り込み",
+		amountTotal: 0,
+		orderItem: [],
+	});
+	const [quantities, setQuantities] = useState<{ [itemId: string]: number }>({});
+	
   useEffect(() => {
     if (!id) return
     const fetchEvent = async () => {
@@ -75,7 +92,16 @@ export default function EventDetailPage() {
             予約する
           </button>
 
-          {showModal && <ReservationModal event={event} onClose={() => setShowModal(false)} />}
+          {showModal && (
+						<ReservationModal
+							event={event}
+							form={form}
+							setForm={setForm}
+							quantities={quantities}
+							setQuantities={setQuantities}
+							onClose={() => setShowModal(false)} 
+						/>
+					)}
         </div>
     </div>
   )

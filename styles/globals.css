@@ -1,3 +1,53 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  /* タイポグラフィ */
+  h1 {
+    @apply text-3xl font-bold text-gray-900 leading-tight;
+  }
+
+  h2 {
+    @apply text-2xl font-semibold text-gray-800 leading-snug;
+  }
+
+  h3 {
+    @apply text-xl font-medium text-gray-800;
+  }
+
+  p {
+    @apply text-base leading-relaxed text-gray-700;
+  }
+
+  a {
+    @apply text-blue-600 underline hover:text-blue-800;
+  }
+
+  /* ボタン系 */
+  button {
+    @apply px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 transition-colors;
+  }
+
+  /* 入力フィールド */
+  input, select, textarea {
+    @apply border border-gray-300 px-3 py-2 rounded-md w-full text-sm placeholder-gray-400;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    @apply outline-none ring-2 ring-blue-400 ring-opacity-50;
+  }
+
+  /* 表 */
+  table {
+    @apply w-full border-collapse;
+  }
+
+  th {
+    @apply text-left bg-gray-100 px-3 py-2 text-sm text-gray-600;
+  }
+
+  td {
+    @apply border-t px-3 py-2 text-sm text-gray-800;
+  }
+}

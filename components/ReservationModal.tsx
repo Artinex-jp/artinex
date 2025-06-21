@@ -1,16 +1,30 @@
 import { useState } from "react";
+import { Dispatch, SetStateAction } from "react";
 
-export default function ReservationModal({ event, onClose }: { event: any; onClose: () => void }) {
+type OrderItem = { itemId: string; quantity: number };
+type ReservationForm = {
+  customer: { name: string; email: string; tel: string };
+  paymentMethod: string;
+  amountTotal: number;
+  orderItem: OrderItem[];
+};
+
+export default function ReservationModal({
+  event,
+  form,
+  setForm,
+  quantities,
+  setQuantities,
+  onClose,
+}: {
+  event: any;
+  form: ReservationForm;
+  setForm: Dispatch<SetStateAction<ReservationForm>>;
+  quantities: { [itemId: string]: number };
+  setQuantities: Dispatch<SetStateAction<{ [itemId: string]: number }>>;
+  onClose: () => void;
+}) {
   const [step, setStep] = useState<"form" | "confirm" | "done">("form");
-
-  const [form, setForm] = useState({
-    customer: { name: "", email: "", tel: "" },
-    paymentMethod: "銀行振り込み",
-    amountTotal: 0,
-    orderItem: [],
-  });
-
-  const [quantities, setQuantities] = useState<{ [itemId: string]: number }>({});
 
   const prepareOrder = () => {
     const orderItem = Object.entries(quantities)
@@ -23,7 +37,7 @@ export default function ReservationModal({ event, onClose }: { event: any; onClo
         return total + pi.item.price * q;
       }, 0);
 
-    setForm((f) => ({ ...f, amountTotal, orderItem }));
+    setForm(prev => ({ ...prev, amountTotal, orderItem }));
     setStep("confirm");
   };
 
@@ -35,44 +49,87 @@ export default function ReservationModal({ event, onClose }: { event: any; onClo
     });
 
     const result = await res.json();
+
+    if (form.paymentMethod === "オンライン決済") {
+			const stripeRes = await fetch("/api/create-checkout-session", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify(result),
+			});
+				const { url } = await stripeRes.json();
+				console.log(url)
+			}
     if (result.success) {
       setStep("done");
     }
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-      <div className="bg-white p-4 rounded max-w-md w-full">
+    <div
+			className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"
+			onClick={onClose}
+		>
+      <div
+				className="bg-white p-4 rounded max-w-xl w-full"
+				onClick={e => e.stopPropagation()}
+			>
         {step === "form" && (
           <>
             <h2 className="text-xl font-bold mb-4">予約フォーム</h2>
-            <input
-              placeholder="お名前"
-              className="border w-full mb-2"
-              onChange={e => setForm(f => ({ ...f, customer: { ...f.customer, name: e.target.value } }))}
-            />
-            <input
-              placeholder="メールアドレス"
-              className="border w-full mb-2"
-              onChange={e => setForm(f => ({ ...f, customer: { ...f.customer, email: e.target.value } }))}
-            />
-            <input
-              placeholder="電話番号"
-              className="border w-full mb-2"
-              onChange={e => setForm(f => ({ ...f, customer: { ...f.customer, tel: e.target.value } }))}
-            />
-            <div className="mb-2">
-              <label className="block font-semibold mb-1">お支払い方法</label>
-              <select
-                className="border w-full"
-                value={form.paymentMethod}
-                onChange={e => setForm(f => ({ ...f, paymentMethod: e.target.value }))}
-              >
-                <option value="銀行振り込み">銀行振り込み</option>
-                <option value="当日現金支払い">当日現金支払い</option>
-                <option value="オンライン決済">オンライン決済</option>
-              </select>
-            </div>
+						<div className="grid grid-cols-[7em_1fr] gap-2 items-start">
+							<label>お名前</label>
+							<div>
+								<input
+									placeholder="お名前"
+									className="border w-full mb-2"
+									value={form.customer.name}
+									onChange={e => setForm(f => ({ ...f, customer: { ...f.customer, name: e.target.value } }))}
+								/>
+							</div>
+							<label>メールアドレス</label>
+							<div>
+								<input
+									placeholder="メールアドレス"
+									className="border w-full mb-2"
+									value={form.customer.email}
+									onChange={e => setForm(f => ({ ...f, customer: { ...f.customer, email: e.target.value } }))}
+								/>
+							</div>
+							<label>電話番号</label>
+							<div>
+								<input
+									placeholder="電話番号"
+									className="border w-full mb-2"
+									value={form.customer.tel}
+									onChange={e => setForm(f => ({ ...f, customer: { ...f.customer, tel: e.target.value } }))}
+								/>
+							</div>
+							<label className="block font-semibold mb-1">お支払い方法</label>
+							<div className="flex gap-2">
+								{["銀行振り込み", "当日現金支払い", "オンライン決済"].map((method) => (
+									<label key={method}>
+										<input
+											type="radio"
+											name="paymentMethod"
+											value={method}
+											checked={form.paymentMethod === method}
+											onChange={() => setForm(f => ({ ...f, paymentMethod: method }))}
+											className="hidden"
+										/>
+										<div
+											className={`px-4 py-2 rounded cursor-pointer border ${
+												form.paymentMethod === method
+													? "bg-blue-600 text-white border-blue-600"
+													: "bg-white text-gray-800 border-gray-300"
+											}`}
+										>
+											{method}
+										</div>
+									</label>
+								))}
+							</div>
+
+						</div>
             <hr className="my-2" />
             {event.performances.flatMap((p: any) =>
               p.performanceItem.map((pi: any) => {
@@ -93,7 +150,7 @@ export default function ReservationModal({ event, onClose }: { event: any; onClo
               })
             )}
             <div className="flex justify-end mt-4">
-              <button className="bg-gray-300 px-4 py-2 mr-2" onClick={onClose}>キャンセル</button>
+              <button className="bg-gray-400 px-4 py-2 mr-2 hover:bg-gray-500" onClick={onClose}>キャンセル</button>
               <button className="bg-blue-600 text-white px-4 py-2" onClick={prepareOrder}>予約確認</button>
             </div>
           </>
