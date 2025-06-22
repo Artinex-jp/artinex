@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Dispatch, SetStateAction } from "react";
+import { formatDate } from "../utils/formatDate"
 
 type OrderItem = { itemId: string; quantity: number };
 type ReservationForm = {
@@ -130,29 +131,89 @@ export default function ReservationModal({
 							</div>
 
 						</div>
-            <hr className="my-2" />
-            {event.performances.flatMap((p: any) =>
-              p.performanceItem.map((pi: any) => {
-                const item = pi.item;
-                return (
-                  <div key={item.id} className="flex justify-between items-center mb-2">
-                    <div>{item.title}（¥{item.price}）</div>
-                    <input
-                      type="number"
-                      min={0}
-                      className="w-16 border"
-                      onChange={(e) =>
-                        setQuantities((q) => ({ ...q, [item.id]: parseInt(e.target.value || "0") }))
-                      }
-                    />
-                  </div>
-                );
-              })
-            )}
-            <div className="flex justify-end mt-4">
-              <button className="bg-gray-400 px-4 py-2 mr-2 hover:bg-gray-500" onClick={onClose}>キャンセル</button>
-              <button className="bg-blue-600 text-white px-4 py-2" onClick={prepareOrder}>予約確認</button>
-            </div>
+						<hr className="my-2" />
+
+						{event.performances.flatMap((p: any) =>
+							p.performanceItem.map((pi: any) => {
+								const item = pi.item;
+								const count = quantities[item.id] || 0;
+								return (
+									<div key={item.id} className="flex justify-between items-center mb-2">
+										<div>
+											<div>¥{item.price}</div>
+											<div>{item.type}</div>
+										</div>
+										<div>
+											<div>{formatDate(p.date, "yyyy年m月d日")}</div>
+											<div>{p.eventPlace.name}</div>
+										</div>
+										<div className="flex items-center space-x-1">
+											<button
+												type="button"
+												className={`flex items-center justify-center w-8 h-8 border border-gray-500 bg-white text-gray-800 font-bold rounded disabled:opacity-30`}
+												disabled={count <= 0}
+												onClick={() =>
+													setQuantities((q) => ({
+														...q,
+														[item.id]: Math.max(0, (q[item.id] || 0) - 1),
+													}))
+												}
+											>
+												−
+											</button>
+											<span className="w-8 text-center">{count}</span>
+											<button
+												type="button"
+												className={`flex items-center justify-center w-8 h-8 border border-gray-500 bg-white text-gray-800 font-bold rounded disabled:opacity-30`}
+												disabled={count >= 20}
+												onClick={() =>
+													setQuantities((q) => ({
+														...q,
+														[item.id]: Math.min(20, (q[item.id] || 0) + 1),
+													}))
+												}
+											>
+												＋
+											</button>
+										</div>
+									</div>
+								);
+							})
+						)}
+
+
+						<div className="text-right font-bold mt-4">
+							合計金額: ¥
+							{event.performances
+								.flatMap((p: any) => p.performanceItem)
+								.reduce((sum: number, pi: any) => {
+									const item = pi.item;
+									const qty = quantities[item.id] || 0;
+									return sum + item.price * qty;
+								}, 0)
+								.toLocaleString()}
+						</div>
+
+						<div className="flex justify-end mt-4">
+							<button
+								className="bg-gray-400 px-4 py-2 mr-2 hover:bg-gray-500"
+								onClick={onClose}
+							>
+								キャンセル
+							</button>
+							<button
+								className={`px-4 py-2 text-white ${
+									Object.values(quantities).some((v) => v > 0)
+										? "bg-blue-600 hover:bg-blue-700"
+										: "bg-gray-400 cursor-not-allowed"
+								}`}
+								onClick={prepareOrder}
+								disabled={!Object.values(quantities).some((v) => v > 0)}
+							>
+								予約確認
+							</button>
+						</div>
+
           </>
         )}
 
@@ -177,7 +238,7 @@ export default function ReservationModal({
             })}
             <div className="mt-4 font-bold text-right">合計：¥{form.amountTotal}</div>
             <div className="flex justify-end mt-4">
-              <button className="bg-gray-300 px-4 py-2 mr-2" onClick={() => setStep("form")}>戻る</button>
+              <button className="bg-gray-300 px-4 py-2 mr-2 hover:bg-gray-400" onClick={() => setStep("form")}>戻る</button>
               <button className="bg-green-600 text-white px-4 py-2" onClick={handleSubmit}>予約確定</button>
             </div>
           </>

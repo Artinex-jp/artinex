@@ -29,6 +29,10 @@
     @apply px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 transition-colors;
   }
 
+  button:disabled {
+    @apply bg-gray-400 text-white cursor-not-allowed;
+  }
+
   /* 入力フィールド */
   input, select, textarea {
     @apply border border-gray-300 px-3 py-2 rounded-md w-full text-sm placeholder-gray-400;
