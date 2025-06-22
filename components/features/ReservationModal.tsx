@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { Dispatch, SetStateAction } from "react";
-import { formatDate } from "../utils/formatDate"
+import { formatDate } from "../../utils/formatDate"
+import Badge from "../ui/Badge"
 
 type OrderItem = { itemId: string; quantity: number };
 type ReservationForm = {
-  customer: { name: string; email: string; tel: string };
+  customer: { lastName: string; firstName: string; email: string; tel: string };
   paymentMethod: string;
   amountTotal: number;
   orderItem: OrderItem[];
@@ -79,12 +80,18 @@ export default function ReservationModal({
             <h2 className="text-xl font-bold mb-4">予約フォーム</h2>
 						<div className="grid grid-cols-[7em_1fr] gap-2 items-start">
 							<label>お名前</label>
-							<div>
+							<div className="flex gap-4">
 								<input
-									placeholder="お名前"
+									placeholder="姓"
 									className="border w-full mb-2"
-									value={form.customer.name}
-									onChange={e => setForm(f => ({ ...f, customer: { ...f.customer, name: e.target.value } }))}
+									value={form.customer.lastName}
+									onChange={e => setForm(f => ({ ...f, customer: { ...f.customer, lastName: e.target.value } }))}
+								/>
+								<input
+									placeholder="名"
+									className="border w-full mb-2"
+									value={form.customer.firstName}
+									onChange={e => setForm(f => ({ ...f, customer: { ...f.customer, firstName: e.target.value } }))}
 								/>
 							</div>
 							<label>メールアドレス</label>
@@ -121,7 +128,7 @@ export default function ReservationModal({
 											className={`px-4 py-2 rounded cursor-pointer border ${
 												form.paymentMethod === method
 													? "bg-blue-600 text-white border-blue-600"
-													: "bg-white text-gray-800 border-gray-300"
+													: "bg-white text-gray-800 border-gray-300 hover:bg-gray-100"
 											}`}
 										>
 											{method}
@@ -135,48 +142,52 @@ export default function ReservationModal({
 
 						{event.performances.flatMap((p: any) =>
 							p.performanceItem.map((pi: any) => {
+								console.log(p)
 								const item = pi.item;
 								const count = quantities[item.id] || 0;
 								return (
-									<div key={item.id} className="flex justify-between items-center mb-2">
-										<div>
-											<div>¥{item.price}</div>
-											<div>{item.type}</div>
+									<>
+										<div key={item.id} className="flex justify-between items-center mb-2">
+											<div>
+												<div>¥{item.price.toLocaleString()}</div>
+												<Badge>{item.type}</Badge>
+											</div>
+											<div>
+												<div>{formatDate(p.date, "YYYY年M月D日")}　{formatDate(p.start_time, "hh:mm開演")}</div>
+												<div>{p.eventPlace.name}</div>
+											</div>
+											<div className="flex items-center space-x-1">
+												<button
+													type="button"
+													className={`flex items-center justify-center w-8 h-8 border border-gray-500 bg-white text-gray-800 font-bold rounded hover:bg-gray-100 disabled:opacity-30`}
+													disabled={count <= 0}
+													onClick={() =>
+														setQuantities((q) => ({
+															...q,
+															[item.id]: Math.max(0, (q[item.id] || 0) - 1),
+														}))
+													}
+													>
+													−
+												</button>
+												<span className="w-8 text-center">{count}枚</span>
+												<button
+													type="button"
+													className={`flex items-center justify-center w-8 h-8 border border-gray-500 bg-white text-gray-800 font-bold rounded hover:bg-gray-100 disabled:opacity-30`}
+													disabled={count >= 20}
+													onClick={() =>
+														setQuantities((q) => ({
+															...q,
+															[item.id]: Math.min(20, (q[item.id] || 0) + 1),
+														}))
+													}
+													>
+													＋
+												</button>
+											</div>
 										</div>
-										<div>
-											<div>{formatDate(p.date, "yyyy年m月d日")}</div>
-											<div>{p.eventPlace.name}</div>
-										</div>
-										<div className="flex items-center space-x-1">
-											<button
-												type="button"
-												className={`flex items-center justify-center w-8 h-8 border border-gray-500 bg-white text-gray-800 font-bold rounded disabled:opacity-30`}
-												disabled={count <= 0}
-												onClick={() =>
-													setQuantities((q) => ({
-														...q,
-														[item.id]: Math.max(0, (q[item.id] || 0) - 1),
-													}))
-												}
-											>
-												−
-											</button>
-											<span className="w-8 text-center">{count}</span>
-											<button
-												type="button"
-												className={`flex items-center justify-center w-8 h-8 border border-gray-500 bg-white text-gray-800 font-bold rounded disabled:opacity-30`}
-												disabled={count >= 20}
-												onClick={() =>
-													setQuantities((q) => ({
-														...q,
-														[item.id]: Math.min(20, (q[item.id] || 0) + 1),
-													}))
-												}
-											>
-												＋
-											</button>
-										</div>
-									</div>
+										<hr/>
+									</>
 								);
 							})
 						)}
@@ -196,7 +207,7 @@ export default function ReservationModal({
 
 						<div className="flex justify-end mt-4">
 							<button
-								className="bg-gray-400 px-4 py-2 mr-2 hover:bg-gray-500"
+								className="bg-white text-gray-700 px-4 py-2 mr-2 border hover:bg-gray-100"
 								onClick={onClose}
 							>
 								キャンセル
@@ -213,14 +224,13 @@ export default function ReservationModal({
 								予約確認
 							</button>
 						</div>
-
           </>
         )}
 
         {step === "confirm" && (
           <>
             <h2 className="text-xl font-bold mb-4">予約内容の確認</h2>
-            <p className="mb-2">お名前：{form.customer.name}</p>
+            <p className="mb-2">お名前：{form.customer.lastName}&nbsp;{form.customer.firstName}</p>
             <p className="mb-2">メール：{form.customer.email}</p>
             <p className="mb-2">電話番号：{form.customer.tel}</p>
             <p className="mb-2">支払方法：{form.paymentMethod}</p>
@@ -229,17 +239,29 @@ export default function ReservationModal({
               const item = event.performances
                 .flatMap((p: any) => p.performanceItem)
                 .find((pi: any) => pi.item.id === oi.itemId)?.item;
+							const performance = event.performances
+								.find((p: any) => p.performanceItem?.find((pi: any) => pi.item_id === item.id))
               return (
-                <div key={oi.itemId} className="flex justify-between mb-1">
-                  <span>{item?.title}</span>
-                  <span>¥{item?.price} × {oi.quantity}</span>
-                </div>
+								<>
+									<div key={oi.itemId} className="flex justify-between mb-1">
+									<div>
+										<div>¥{item.price.toLocaleString()}</div>
+										<Badge>{item.type}</Badge>
+									</div>
+									<div>
+										<div>{formatDate(performance.date, "YYYY年M月D日")}　{formatDate(performance.start_time, "hh:mm開演")}</div>
+										<div>{performance.eventPlace.name}</div>
+									</div>
+										<span>¥{item?.price} × {oi.quantity}枚</span>
+									</div>
+									<hr/>
+								</>
               );
             })}
             <div className="mt-4 font-bold text-right">合計：¥{form.amountTotal}</div>
             <div className="flex justify-end mt-4">
-              <button className="bg-gray-300 px-4 py-2 mr-2 hover:bg-gray-400" onClick={() => setStep("form")}>戻る</button>
-              <button className="bg-green-600 text-white px-4 py-2" onClick={handleSubmit}>予約確定</button>
+              <button className="bg-white text-gray-700 px-4 py-2 mr-2 border hover:bg-gray-100" onClick={() => setStep("form")}>戻る</button>
+              <button className="bg-green-600 text-white px-4 py-2 hover:bg-green-700" onClick={handleSubmit}>予約確定</button>
             </div>
           </>
         )}

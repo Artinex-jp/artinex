@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
-import ReservationModal from "../../components/ReservationModal";
+import ReservationModal from "../../components/features/ReservationModal";
 
 interface EventData {
   id: string
@@ -25,7 +25,7 @@ interface EventData {
 
 type OrderItem = { itemId: string; quantity: number };
 type ReservationForm = {
-  customer: { name: string; email: string; tel: string };
+  customer: { lastName: string; firstName: string; email: string; tel: string };
   paymentMethod: string;
   amountTotal: number;
   orderItem: OrderItem[];
@@ -39,7 +39,7 @@ export default function EventDetailPage() {
   const [showModal, setShowModal] = useState(false);
 	const [step, setStep] = useState<"form" | "confirm" | "done">("form");
 	const [form, setForm] = useState<ReservationForm>({
-		customer: { name: "", email: "", tel: "" },
+		customer: { lastName: "", firstName: "", email: "", tel: "" },
 		paymentMethod: "銀行振り込み",
 		amountTotal: 0,
 		orderItem: [],
