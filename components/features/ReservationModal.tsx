@@ -54,12 +54,17 @@ export default function ReservationModal({
 
     if (form.paymentMethod === "オンライン決済") {
 			const stripeRes = await fetch("/api/create-checkout-session", {
-					method: "POST",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify(result),
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify(result),
 			});
 				const { url } = await stripeRes.json();
-				console.log(url)
+				const mailData = await fetch("/api/send-payment-link", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({form, event, stripeUrl: url})
+				})
+				console.log(mailData)
 			}
     if (result.success) {
       setStep("done");
