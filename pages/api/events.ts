@@ -20,7 +20,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 				eventPlace: event_places (
 					* 
 				),
-				performance_item (
+				performance_items (
 					*,
 					item: items (
 						* 

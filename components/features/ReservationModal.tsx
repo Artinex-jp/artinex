@@ -146,7 +146,7 @@ export default function ReservationModal({
 						<hr className="my-2" />
 
 						{event.performances.flatMap((p: any) =>
-							p.performanceItem.map((pi: any) => {
+							p.performanceItems.map((pi: any) => {
 								console.log(p)
 								const item = pi.item;
 								const count = quantities[item.id] || 0;
@@ -201,7 +201,7 @@ export default function ReservationModal({
 						<div className="text-right font-bold mt-4">
 							合計金額: ¥
 							{event.performances
-								.flatMap((p: any) => p.performanceItem)
+								.flatMap((p: any) => p.performanceItems)
 								.reduce((sum: number, pi: any) => {
 									const item = pi.item;
 									const qty = quantities[item.id] || 0;

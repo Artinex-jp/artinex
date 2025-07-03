@@ -22,10 +22,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         eventPlace: event_place_id (
           *
         ),
-        performanceItem: performance_item (
+        performanceItems: performance_items (
           *,
           item: items (
             *
+          )
+        ),
+        performancePieces: performance_pieces (
+          *,
+          piece: piece_id (
+            *,
+            composer: composer_id (*)
+          ),
+          performancePieceArtists: performance_piece_artists (
+            *,
+            artists: artist_id (
+              *
+            )
           )
         )
       )
@@ -34,6 +47,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     .single()
 	console.log("API /api/event called with id:", req.query.id);
 	console.log(data);
+	console.log(error);
   if (error) return res.status(500).json({ error: error.message })
   return res.status(200).json(data)
 }
