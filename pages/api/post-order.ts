@@ -37,11 +37,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     quantity: item.quantity,
   }));
 
-  const { data: orderItemData, error: insertItemsError } = await supabase.from("order_item").insert(itemsToInsert).select(`
+  const { data: orderItemData, error: insertItemsError } = await supabase.from("order_items").insert(itemsToInsert).select(`
     *,
     item: items (
       *,
-      performanceItem: performance_item (
+      performanceItems: performance_items (
         *,
         performance: performances (
           *,
@@ -58,5 +58,5 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (insertItemsError) return res.status(500).json({ error: insertItemsError.message });
 
   // Stripe Checkout Session を作成（必要であればここに記述）
-  return res.status(200).json({ success: true, order: orderData, customer: customerData,  orderItem: orderItemData});
+  return res.status(200).json({ success: true, order: orderData, customer: customerData,  orderItems: orderItemData});
 }

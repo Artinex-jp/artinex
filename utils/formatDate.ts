@@ -1,24 +1,27 @@
 export function formatDate(raw: string, format: string): string {
-  // 時刻のみの場合、仮の日付を補う
   const isTimeOnly = /^\d{2}:\d{2}:\d{2}(?:\+\d{2}(?::\d{2})?)?$/.test(raw);
   let padded = raw;
-  console.log(padded)
+
   if (isTimeOnly) {
-      const withFullOffset = raw.replace(
-          /(\d{2}:\d{2}:\d{2})(\+\d{2})$/,
-          (_match, time, offsetHour) => `${time}${offsetHour}:00`
-      );
-    console.log(padded)
-    padded = `2000-01-01T${withFullOffset}`;
+    // タイムゾーンオフセットが "+09" の形式なら ":00" を補う
+    padded = raw.replace(
+      /^(\d{2}:\d{2}:\d{2})(\+\d{2})$/,
+      (_match, time, offsetHour) => `${time}${offsetHour}:00`
+    );
+
+    // 変換されなかった場合（例：既に +09:00 の形式 or タイムゾーンなし）にも対応
+    if (padded === raw) padded = raw;
+
+    padded = `2000-01-01T${padded}`;
   }
 
   const date = new Date(padded);
 
   if (isNaN(date.getTime())) {
+    console.log(raw)
     throw new Error("Invalid date string");
   }
 
-  // 日付を使ったフォーマット指定子を含んでいたら、時刻専用入力ではエラーにする
   if (isTimeOnly && /[YMDE]/.test(format)) {
     throw new Error("Time-only string cannot be used with date-specific format tokens");
   }

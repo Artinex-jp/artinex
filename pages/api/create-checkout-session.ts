@@ -16,15 +16,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const { customer, orderItem, order } = req.body;
-  console.log(req.body.orderItem[0].item)
+  const { customer, orderItems, order } = req.body;
+  console.log(req.body)
 
   // 2. Stripe用のline_itemsの作成
-  const line_items = orderItem.map((oi: any) => ({
+  const line_items = orderItems.map((oi: any) => ({
     price_data: {
       currency: "jpy",
       product_data: {
-        name: `【${oi.item.title}】` + oi.item.performanceItem[0].performance.event.title,
+        name: `【${oi.item.title}】` + oi.item.performanceItems[0].performance.event.title,
       },
       unit_amount: oi.item.price,
     },

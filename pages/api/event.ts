@@ -1,5 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { createClient } from '@supabase/supabase-js'
+import { toCamelCase } from '@/utils/toCamelCase'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -12,42 +13,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (typeof id !== 'string') {
     return res.status(400).json({ error: 'Invalid ID' })
   }
-
   const { data, error } = await supabase
-    .from('events')
-    .select(`
-      *,
-      performances (
-        *,
-        eventPlace: event_place_id (
-          *
-        ),
-        performanceItems: performance_items (
-          *,
-          item: items (
-            *
-          )
-        ),
-        performancePieces: performance_pieces (
-          *,
-          piece: piece_id (
-            *,
-            composer: composer_id (*)
-          ),
-          performancePieceArtists: performance_piece_artists (
-            *,
-            artists: artist_id (
-              *
-            )
-          )
-        )
-      )
-    `)
-    .eq('id', id)
-    .single()
+    .rpc('get_event_full_data', { event_id: id })
 	console.log("API /api/event called with id:", req.query.id);
-	console.log(data);
+	console.log(toCamelCase(data?.[0] ?? {}));
 	console.log(error);
+  const result = toCamelCase(data?.[0] ?? {})
   if (error) return res.status(500).json({ error: error.message })
-  return res.status(200).json(data)
+  return res.status(200).json(result)
 }

@@ -33,7 +33,7 @@ export default function ReservationModal({
       .filter(([_, quantity]) => quantity > 0)
       .map(([itemId, quantity]) => ({ itemId, quantity }));
 
-    const amountTotal = event.performances.flatMap((p: any) => p.performanceItem)
+    const amountTotal = event.performances.flatMap((p: any) => p.performanceItems)
       .reduce((total: number, pi: any) => {
         const q = quantities[pi.item.id] || 0;
         return total + pi.item.price * q;
@@ -58,14 +58,19 @@ export default function ReservationModal({
 				headers: { "Content-Type": "application/json" },
 				body: JSON.stringify(result),
 			});
-				const { url } = await stripeRes.json();
-				const mailData = await fetch("/api/send-payment-link", {
-					method: "POST",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify({form, event, stripeUrl: url})
-				})
-				console.log(mailData)
-			}
+			const { url } = await stripeRes.json();
+			const mailData = await fetch("/api/send-payment-link", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({form, event, stripeUrl: url})
+			})
+		} else {
+			const mailData = await fetch("/api/send-payment-link", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({form, event})
+			})
+		}
     if (result.success) {
       setStep("done");
     }
@@ -118,27 +123,45 @@ export default function ReservationModal({
 								/>
 							</div>
 							<label className="block font-semibold mb-1">お支払い方法</label>
-							<div className="flex gap-2">
+							<div className="flex flex-col md:flex-row gap-2">
 								{["銀行振り込み", "当日現金支払い", "オンライン決済"].map((method) => (
-									<label key={method}>
-										<input
-											type="radio"
-											name="paymentMethod"
-											value={method}
-											checked={form.paymentMethod === method}
-											onChange={() => setForm(f => ({ ...f, paymentMethod: method }))}
-											className="hidden"
-										/>
-										<div
-											className={`px-4 py-2 rounded cursor-pointer border ${
-												form.paymentMethod === method
-													? "bg-blue-600 text-white border-blue-600"
-													: "bg-white text-gray-800 border-gray-300 hover:bg-gray-100"
-											}`}
-										>
-											{method}
+								<label key={method} className="block">
+									<input
+										type="radio"
+										name="paymentMethod"
+										value={method}
+										checked={form.paymentMethod === method}
+										onChange={() => setForm(f => ({ ...f, paymentMethod: method }))}
+										className="hidden"
+									/>
+
+									<div
+										className={`flex items-center justify-between px-4 py-2 rounded cursor-pointer border transition
+											${form.paymentMethod === method
+												? "bg-green-50 border-green-500 text-green-800"
+												: "bg-white border-gray-300 text-gray-800 hover:bg-gray-100"}`}
+									>
+										<div className="flex items-center gap-3">
+											<div
+												className={`w-5 h-5 flex items-center justify-center rounded-full border-2 transition
+													${form.paymentMethod === method ? "bg-green-500 border-green-500" : "border-gray-400"}`}
+											>
+												{form.paymentMethod === method && (
+													<svg
+														className="w-3 h-3 text-white"
+														fill="none"
+														stroke="currentColor"
+														strokeWidth="3"
+														viewBox="0 0 24 24"
+													>
+														<path d="M5 13l4 4L19 7" />
+													</svg>
+												)}
+											</div>
+											<span className="text-sm">{method}</span>
 										</div>
-									</label>
+									</div>
+								</label>
 								))}
 							</div>
 
@@ -147,24 +170,23 @@ export default function ReservationModal({
 
 						{event.performances.flatMap((p: any) =>
 							p.performanceItems.map((pi: any) => {
-								console.log(p)
 								const item = pi.item;
 								const count = quantities[item.id] || 0;
 								return (
 									<>
-										<div key={item.id} className="flex justify-between items-center mb-2">
+										<div key={item.id} className="flex justify-between items-center mb-2 text-sm">
 											<div>
 												<div>¥{item.price.toLocaleString()}</div>
 												<Badge>{item.type}</Badge>
 											</div>
 											<div>
-												<div>{formatDate(p.date, "YYYY年M月D日")}　{formatDate(p.start_time, "hh:mm開演")}</div>
+												<div>{formatDate(p.date, "YYYY年M月D日")}　{formatDate(p.startTime, "hh:mm開演")}</div>
 												<div>{p.eventPlace.name}</div>
 											</div>
 											<div className="flex items-center space-x-1">
 												<button
 													type="button"
-													className={`flex items-center justify-center w-8 h-8 border border-gray-500 bg-white text-gray-800 font-bold rounded hover:bg-gray-100 disabled:opacity-30`}
+													className={`flex items-center justify-center w-8 h-8 border border-gray-500 bg-white text-gray-800 font-bold rounded hover:bg-gray-100 disabled:bg-gray-100 disabled:border-gray-200`}
 													disabled={count <= 0}
 													onClick={() =>
 														setQuantities((q) => ({
@@ -178,7 +200,7 @@ export default function ReservationModal({
 												<span className="w-8 text-center">{count}枚</span>
 												<button
 													type="button"
-													className={`flex items-center justify-center w-8 h-8 border border-gray-500 bg-white text-gray-800 font-bold rounded hover:bg-gray-100 disabled:opacity-30`}
+													className={`flex items-center justify-center w-8 h-8 border border-gray-500 bg-white text-gray-800 font-bold rounded hover:bg-gray-100 disabled:bg-gray-100 disabled:border-gray-200`}
 													disabled={count >= 20}
 													onClick={() =>
 														setQuantities((q) => ({
@@ -224,7 +246,7 @@ export default function ReservationModal({
 										: "bg-gray-400 cursor-not-allowed"
 								}`}
 								onClick={prepareOrder}
-								disabled={!Object.values(quantities).some((v) => v > 0)}
+								disabled={!Object.values(quantities).some((v) => v > 0 && form.customer.lastName && form.customer.firstName && form.customer.email)}
 							>
 								予約確認
 							</button>
@@ -242,19 +264,19 @@ export default function ReservationModal({
             <hr className="my-2" />
             {form.orderItem.map((oi: any) => {
               const item = event.performances
-                .flatMap((p: any) => p.performanceItem)
+                .flatMap((p: any) => p.performanceItems)
                 .find((pi: any) => pi.item.id === oi.itemId)?.item;
 							const performance = event.performances
-								.find((p: any) => p.performanceItem?.find((pi: any) => pi.item_id === item.id))
+								.find((p: any) => p.performanceItems?.find((pi: any) => pi.itemId === item.id))
               return (
 								<>
-									<div key={oi.itemId} className="flex justify-between mb-1">
+									<div key={oi.itemId} className="flex justify-between mb-1 text-sm md:text-base">
 									<div>
 										<div>¥{item.price.toLocaleString()}</div>
 										<Badge>{item.type}</Badge>
 									</div>
 									<div>
-										<div>{formatDate(performance.date, "YYYY年M月D日")}　{formatDate(performance.start_time, "hh:mm開演")}</div>
+										<div>{formatDate(performance.date, "YYYY年M月D日")}　{formatDate(performance.startTime, "hh:mm開演")}</div>
 										<div>{performance.eventPlace.name}</div>
 									</div>
 										<span>¥{item?.price} × {oi.quantity}枚</span>

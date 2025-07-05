@@ -26,11 +26,41 @@
 
   /* ボタン系 */
   button {
-    @apply px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 transition-colors;
+    @apply px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700 transition-colors shadow-md;
   }
 
   button:disabled {
     @apply bg-gray-300 text-white cursor-not-allowed;
+  }
+
+    /* ラジオ風ボタンの共通スタイル */
+  .option-button {
+    @apply flex items-center justify-between w-full px-4 py-3 border rounded-md transition text-sm;
+  }
+
+  .option-button-selected {
+    @apply border-green-500 bg-green-50;
+  }
+
+  .option-button-unselected {
+    @apply border-gray-300 bg-white;
+  }
+
+  /* チェックアイコンの枠 */
+  .radio-icon {
+    @apply w-5 h-5 flex items-center justify-center rounded-full border-2 transition;
+  }
+
+  .radio-icon-selected {
+    @apply border-green-500 bg-green-500;
+  }
+
+  .radio-icon-unselected {
+    @apply border-gray-400;
+  }
+
+  .radio-check {
+    @apply w-3 h-3 text-white;
   }
 
   /* 入力フィールド */
