@@ -212,6 +212,7 @@ export default function EventDetailPage() {
                 <div className="grid grid-cols-[1fr_auto] gap-4">
                   <div className="text-base font-semibold min-w-[60]">
                     {pp.piece.title}
+                    <span className="font-normal ml-2 text-sm">{pp.piece.subtitle}</span>
                   </div>
                   <div className="min-w-24 text-sm text-gray-600 pt-[4px]">
                     {pp.piece.arrangementSource?.composer ? (
