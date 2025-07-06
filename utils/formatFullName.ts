@@ -1,5 +1,5 @@
 type NameInput = {
-  nationality: string
+  nationality?: string
   lastName: string
   firstName: string
   middleName?: string
@@ -11,7 +11,7 @@ export function formatFullName({
   firstName,
   middleName,
 }: NameInput): string {
-  const normalized = nationality.trim().toLowerCase()
+  const normalized = nationality?.trim().toLowerCase()
 
   // 姓を先にする国（姓 名形式） - 半角スペース区切り
   const surnameFirstCountries = new Set([
@@ -22,7 +22,7 @@ export function formatFullName({
     'hu', 'hungary', 'ハンガリー'
   ])
 
-  if (surnameFirstCountries.has(normalized)) {
+  if (normalized && surnameFirstCountries.has(normalized)) {
     return `${lastName} ${firstName}${middleName ? ` ${middleName}` : ''}`
   }
 
