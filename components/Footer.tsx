@@ -2,9 +2,9 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-100 text-gray-700 text-sm mt-10 border-t">
-      <div className="max-w-6xl mx-auto px-4 py-6 md:flex-row justify-between items-center gap-4">
-        <div className="flex space-x-6">
+    <footer className="bg-gray-100 text-gray-700 text-sm border-t">
+      <div className="max-w-xl mx-auto px-4 py-6 md:flex-row justify-between items-center gap-4">
+        <div className="flex flex-wrap space-x-6 gap-3 mb-4">
           <Link href="https://www.artinex.jp/" className="text-gray-500 font-bold hover:text-gray-700 no-underline">
             会社概要
           </Link>
