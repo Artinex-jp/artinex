@@ -7,6 +7,7 @@ import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { supabase } from '@/lib/supabaseClient'
+import LoadingOverlay from '@/components/LoadingOverlay';
 
 interface EventData {
   id: string
@@ -153,7 +154,7 @@ export default function EventDetailPage() {
     localStorage.setItem("customer", JSON.stringify(form.customer))
   }, [form.customer])
 
-  if (loading) return <p>読み込み中...</p>
+  if (loading) return <LoadingOverlay/>
   if (!event) return <p>イベントが見つかりませんでした</p>
 
   const sliderSettings = {
@@ -164,7 +165,7 @@ export default function EventDetailPage() {
     slidesToScroll: 1,
     arrows: true,
     autoplay: true,
-    autoplaySpeed: 8000,
+    autoplaySpeed: 10000,
     appendDots: (dots: any) => (
       <div style={{ position: 'absolute', bottom: '10px', width: '100%' }}>
         <ul style={{ display: 'flex', justifyContent: 'center', gap: '8px' }}>{dots}</ul>
@@ -225,13 +226,13 @@ export default function EventDetailPage() {
             .slick-prev:before,
             .slick-next:before {
               font-size: 20px;
-              color: black;
+              color: gray;
               opacity: 0.9;
             }
           `}</style>
           </div>
           <div>
-            <h1 className="text-xl font-bold max-w-3xl mx-auto pt-2 whitespace-pre-wrap ">{event.title}</h1>
+            <h1 className="text-sm md:text-2xl font-bold max-w-3xl mx-auto pt-2 whitespace-pre-wrap ">{event.title}</h1>
             <h1 className="text-sm max-w-3xl mx-auto pt-2 mb-4">{event.subtitle}</h1>
             {event.performances.map((perf) => (
               <div key={perf.id}>

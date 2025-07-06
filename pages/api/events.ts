@@ -15,6 +15,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     .from('events')
     .select(`
       *,
+      images: event_images (*),
 			performances (
 				*,
 				eventPlace: event_places (

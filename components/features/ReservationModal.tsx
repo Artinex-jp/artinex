@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Dispatch, SetStateAction } from "react";
 import { formatDate } from "../../utils/formatDate"
 import Badge from "../ui/Badge"
+import LoadingOverlay from "../LoadingOverlay";
 
 type OrderItem = { itemId: string; quantity: number };
 type ReservationForm = {
@@ -27,6 +28,7 @@ export default function ReservationModal({
   onClose: () => void;
 }) {
   const [step, setStep] = useState<"form" | "confirm" | "done">("form");
+	const [isLoading, setIsLoading] = useState(false);
 
   const prepareOrder = () => {
     const orderItem = Object.entries(quantities)
@@ -43,38 +45,48 @@ export default function ReservationModal({
     setStep("confirm");
   };
 
-  const handleSubmit = async () => {
-    const res = await fetch("/api/post-order", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(form),
-    });
-
-    const result = await res.json();
-
-    if (form.paymentMethod === "オンライン決済") {
-			const stripeRes = await fetch("/api/create-checkout-session", {
+	const handleSubmit = async () => {
+		setIsLoading(true);
+		try {
+			const res = await fetch("/api/post-order", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify(result),
+				body: JSON.stringify(form),
 			});
-			const { url } = await stripeRes.json();
-			const mailData = await fetch("/api/send-payment-link", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({form, event, stripeUrl: url})
-			})
-		} else {
-			const mailData = await fetch("/api/send-payment-link", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({form, event})
-			})
+
+			const result = await res.json();
+
+			if (form.paymentMethod === "オンライン決済") {
+				const stripeRes = await fetch("/api/create-checkout-session", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify(result),
+				});
+				const { url } = await stripeRes.json();
+
+				await fetch("/api/send-payment-link", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ form, event, stripeUrl: url }),
+				});
+			} else {
+				await fetch("/api/send-payment-link", {
+					method: "POST",
+					headers: { "Content-Type": "application/json" },
+					body: JSON.stringify({ form, event }),
+				});
+			}
+
+			if (result.success) {
+				setStep("done");
+			}
+		} catch (error) {
+			console.error("予約処理中にエラーが発生しました:", error);
+			alert("予約処理に失敗しました。もう一度お試しください。");
+		} finally {
+			setIsLoading(false);
 		}
-    if (result.success) {
-      setStep("done");
-    }
-  };
+	};
 
   return (
     <div
@@ -85,6 +97,7 @@ export default function ReservationModal({
 				className="bg-white p-4 rounded max-w-xl w-full"
 				onClick={e => e.stopPropagation()}
 			>
+				{isLoading && <LoadingOverlay />}
         {step === "form" && (
           <>
             <h2 className="text-xl font-bold mb-4">予約フォーム</h2>
