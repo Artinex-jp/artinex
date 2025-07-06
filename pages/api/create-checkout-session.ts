@@ -24,7 +24,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     price_data: {
       currency: "jpy",
       product_data: {
-        name: `【${oi.item.title}】` + oi.item.performanceItems[0].performance.event.title,
+        name: `【${oi.item.type}】` + oi.item.performanceItems[0].performance.event.title,
       },
       unit_amount: oi.item.price,
     },
