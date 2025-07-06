@@ -44,7 +44,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const { error } = await supabase.from('payments').insert([
       {
         order_id: orderId,
-        amount_total: session.amount_total! / 100,
+        amount_total: session.amount_total!,
         payment_status: session.payment_status,
       }
     ]);
