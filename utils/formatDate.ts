@@ -1,45 +1,45 @@
 export function formatDate(raw: string, format: string): string {
-  const isTimeOnly = /^\d{2}:\d{2}:\d{2}(?:\+\d{2}(?::\d{2})?)?$/.test(raw);
+  const isTimeOnly = /^\d{2}:\d{2}:\d{2}(?:\+\d{2})?$/.test(raw);
   let padded = raw;
 
   if (isTimeOnly) {
-    // タイムゾーンオフセットが "+09" の形式なら ":00" を補う
-    padded = raw.replace(
-      /^(\d{2}:\d{2}:\d{2})(\+\d{2})$/,
-      (_match, time, offsetHour) => `${time}${offsetHour}:00`
-    );
-
-    // 変換されなかった場合（例：既に +09:00 の形式 or タイムゾーンなし）にも対応
+    padded = raw.replace(/^(\d{2}:\d{2}:\d{2})(\+\d{2})$/, (_, t, offset) => `${t}${offset}:00`);
     if (padded === raw) padded = raw;
-
     padded = `2000-01-01T${padded}`;
   }
 
   const date = new Date(padded);
+  if (isNaN(date.getTime())) throw new Error("Invalid date string");
 
-  if (isNaN(date.getTime())) {
-    console.log(raw)
-    throw new Error("Invalid date string");
-  }
+  // JSTで表示
+  const dt = new Intl.DateTimeFormat("ja-JP", {
+    timeZone: "Asia/Tokyo",
+    year: format.includes("YYYY") ? "numeric" : undefined,
+    month: format.includes("MM") || format.includes("M") ? "2-digit" : undefined,
+    day: format.includes("DD") || format.includes("D") ? "2-digit" : undefined,
+    hour: format.includes("hh") || format.includes("h") ? "2-digit" : undefined,
+    minute: format.includes("mm") || format.includes("m") ? "2-digit" : undefined,
+    second: format.includes("ss") || format.includes("s") ? "2-digit" : undefined,
+    weekday: format.includes("E") ? "short" : undefined,
+    hour12: false,
+  }).formatToParts(date);
 
-  if (isTimeOnly && /[YMDE]/.test(format)) {
-    throw new Error("Time-only string cannot be used with date-specific format tokens");
-  }
-
+  const map = Object.fromEntries(dt.map(({ type, value }) => [type, value]));
   const dayNames = ["日", "月", "火", "水", "木", "金", "土"];
 
+  console.log(map)
+
   return format
-    .replace(/YYYY/g, date.getFullYear().toString())
-    .replace(/YY/g, date.getFullYear().toString().slice(-2))
-    .replace(/MM/g, String(date.getMonth() + 1).padStart(2, "0"))
-    .replace(/M/g, String(date.getMonth() + 1))
-    .replace(/DD/g, String(date.getDate()).padStart(2, "0"))
-    .replace(/D/g, String(date.getDate()))
-    .replace(/E/g, dayNames[date.getDay()])
-    .replace(/hh/g, String(date.getHours()).padStart(2, "0"))
-    .replace(/h/g, String(date.getHours()))
-    .replace(/mm/g, String(date.getMinutes()).padStart(2, "0"))
-    .replace(/m/g, String(date.getMinutes()))
-    .replace(/ss/g, String(date.getSeconds()).padStart(2, "0"))
-    .replace(/s/g, String(date.getSeconds()));
+    .replace(/YYYY/g, map.year ?? "")
+    .replace(/MM/g, map.month ?? "")
+    .replace(/M/g, (map.month ?? "").replace(/^0/, ""))
+    .replace(/DD/g, map.day ?? "")
+    .replace(/D/g, (map.day ?? "").replace(/^0/, ""))
+    .replace(/hh/g, map.hour ?? "")
+    .replace(/h/g, (map.hour ?? "").replace(/^0/, ""))
+    .replace(/mm/g, map.minute ?? "")
+    .replace(/m/g, (map.minute ?? "").replace(/^0/, ""))
+    .replace(/ss/g, map.second ?? "")
+    .replace(/s/g, (map.second ?? "").replace(/^0/, ""))
+    .replace(/E/g, dayNames[date.getDay()]);
 }
