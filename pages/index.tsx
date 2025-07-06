@@ -4,7 +4,7 @@ import Link from "next/link";
 interface Event {
   id: string;
   title: string;
-  subTitle: string;
+  subtitle: string;
   description: string;
 }
 

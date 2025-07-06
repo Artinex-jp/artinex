@@ -3,12 +3,21 @@ import { useRouter } from 'next/router'
 import ReservationModal from "../../components/features/ReservationModal";
 import { formatDate } from '@/utils/formatDate';
 import { formatFullName } from '@/utils/formatFullName';
+import Slider from 'react-slick';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
+import { supabase } from '@/lib/supabaseClient'
 
 interface EventData {
   id: string
   title: string
   subtitle:string
   description?: string
+  images?: {
+    id: string
+    imagePath: string
+    altText?: string
+  }[]
   performances: {
     id: string
     title: string
@@ -39,6 +48,7 @@ interface EventData {
       piece: {
         id: string
         title: string
+        subtitle: string
         arrangementSource?: {
           id: string
           title: string
@@ -70,7 +80,10 @@ interface EventData {
         role: string
         artist: {
           id: string
-          name: string
+          nationality: string
+          middleName?: string
+          lastName: string
+          firstName: string
         }
       }[]
     }[]
@@ -143,13 +156,79 @@ export default function EventDetailPage() {
   if (loading) return <p>読み込み中...</p>
   if (!event) return <p>イベントが見つかりませんでした</p>
 
+  const sliderSettings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    arrows: true,
+    autoplay: true,
+    autoplaySpeed: 8000,
+    appendDots: (dots: any) => (
+      <div style={{ position: 'absolute', bottom: '10px', width: '100%' }}>
+        <ul style={{ display: 'flex', justifyContent: 'center', gap: '8px' }}>{dots}</ul>
+      </div>
+    ),
+    customPaging: () => (
+      <div style={{ width: '12px', height: '12px', borderRadius: '9999px', background: '#888' }}></div>
+    )
+  };
+
   return (
     <div>
       <div className="bg-gray-100 w-full">
         <div className="flex-col mx-auto max-w-screen-md w-full mb-4 gap-6 p-6">
           <div>
-            <div className="bg-red-200 w-full aspect-[16/9]">
-            </div>
+            {event.images && event.images.length > 0 && (
+              <div className="relative w-full aspect-[16/9] bg-black overflow-hidden">
+                <Slider {...sliderSettings} className="absolute inset-0 w-full h-full">
+                  {event.images.map((img) => {
+                    const publicUrl = supabase.storage.from('flyers').getPublicUrl(img.imagePath).data.publicUrl;
+                    return (
+                      <div key={img.id} className="w-full h-full flex items-center justify-center">
+                        <img
+                          src={publicUrl}
+                          alt={img.altText || ''}
+                          className="w-full h-full aspect-[16/9] object-contain m-auto"
+                        />
+                      </div>
+                    );
+                  })}
+                </Slider>
+              </div>
+            )}
+          <style jsx global>{`
+            .slick-prev, .slick-next {
+              position: absolute;
+              z-index: 10;
+              top: 50%;
+              transform: translateY(-50%);
+              width: 16px;
+              height: 16px;
+              background-color: rgba(255, 255, 255, 0);
+              border-radius: 9999px;
+              display: flex !important;
+              align-items: center;
+              justify-content: center;
+              cursor: pointer;
+            }
+
+            .slick-prev {
+              left: 16px;
+            }
+
+            .slick-next {
+              right: 16px;
+            }
+
+            .slick-prev:before,
+            .slick-next:before {
+              font-size: 20px;
+              color: black;
+              opacity: 0.9;
+            }
+          `}</style>
           </div>
           <div>
             <h1 className="text-xl font-bold max-w-3xl mx-auto pt-2 whitespace-pre-wrap ">{event.title}</h1>
@@ -212,6 +291,7 @@ export default function EventDetailPage() {
                 <div className="grid grid-cols-[1fr_auto] gap-4">
                   <div className="text-base font-semibold min-w-[60]">
                     {pp.piece.title}
+                    <span className="font-normal ml-2 text-sm">{pp.piece.subtitle}</span>
                   </div>
                   <div className="min-w-24 text-sm text-gray-600 pt-[4px]">
                     {pp.piece.arrangementSource?.composer ? (
@@ -241,7 +321,7 @@ export default function EventDetailPage() {
                   {pp.performancePieceArtists?.map((ppa) => (
                     <li key={ppa.id} className="flex items-center gap-2">
                       <span className="text-blue-500"></span>
-                      <span>{ppa.artist.name}</span>
+                      <span>{formatFullName(ppa.artist)}</span>
                       <span className="text-gray-500">（{ppa.role}）</span>
                     </li>
                   ))}
