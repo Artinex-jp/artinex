@@ -4,6 +4,7 @@ import Image from "next/image";
 import { supabase } from "@/lib/supabaseClient";
 import { formatDate } from "@/utils/formatDate";
 import LoadingOverlay from "@/components/LoadingOverlay";
+import Footer from "@/components/Footer";
 
 interface Event {
   id: string;
@@ -36,7 +37,12 @@ export default function HomePage() {
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
-      <h1 className="text-3xl font-bold mb-8">イベント一覧</h1>
+        <div className="max-w-3xl mx-auto text-center mb-10 px-4">
+          <h1 className="text-3xl font-bold mb-2">Artinex Events</h1>
+          <p className="text-gray-600">
+            多彩なアーティストが奏でる、特別な一夜をご紹介します。
+          </p>
+        </div>
       {loading ? (
         <LoadingOverlay />
       ) : events.length === 0 ? (

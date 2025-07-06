@@ -232,7 +232,7 @@ export default function EventDetailPage() {
           `}</style>
           </div>
           <div>
-            <h1 className="text-xl font-bold max-w-3xl mx-auto pt-2 whitespace-pre-wrap ">{event.title}</h1>
+            <h1 className="text-sm md:text-2xl font-bold max-w-3xl mx-auto pt-2 whitespace-pre-wrap ">{event.title}</h1>
             <h1 className="text-sm max-w-3xl mx-auto pt-2 mb-4">{event.subtitle}</h1>
             {event.performances.map((perf) => (
               <div key={perf.id}>

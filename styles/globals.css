@@ -3,6 +3,10 @@
 @tailwind utilities;
 
 @layer base {
+  html, body, #__next {
+    height: 100%;
+  }
+
   /* タイポグラフィ */
   h1 {
     @apply text-3xl font-bold text-gray-900 leading-tight;
@@ -114,7 +118,7 @@
   td {
     @apply border-t px-3 py-2 text-sm text-gray-800;
   }
-  
+
   .loader {
     width: 60px;
     aspect-ratio: 1;
@@ -146,7 +150,7 @@
     100% {transform:scale(var(--s,1)) translate(0px)   perspective(150px) rotateX(-180deg)}
   }
   @keyframes l11-2 {
-    0%,49.99% {background:#EB9F9F}
-    50%,100%  {background:#A79C8E}
+    0%,49.99% {background:#5BADC1}
+    50%,100%  {background:#D8D2AB}
   }
 }
