@@ -10,7 +10,14 @@ export async function sendReceiptEmail(email: string, session: any) {
   const { data: order, error } = await supabase
     .from("orders")
     .select(`
-      id, customer_last_name, customer_first_name, payment_method, amount_total,
+      id,
+      customer:customer_id (
+        first_name,
+        last_name,
+        email
+      ),
+      payment_method,
+      amount_total,
       order_items (
         quantity,
         item: items (
@@ -33,7 +40,7 @@ export async function sendReceiptEmail(email: string, session: any) {
 
   const html = [
     `<h2>ご予約ありがとうございました</h2>`,
-    `<p><strong>お名前:</strong> ${order.customer_last_name} ${order.customer_first_name}</p>`,
+    `<p><strong>お名前:</strong> ${order.customer[0]?.last_name} ${order.customer[0]?.first_name}</p>`,
     `<p><strong>お支払い方法:</strong> ${order.payment_method}</p>`,
     `<hr />`,
   ];
