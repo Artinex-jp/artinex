@@ -13,7 +13,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const { customer, paymentMethod, amountTotal, orderItem } = req.body;
   const { data: customerData, error: insertCustomerError } = await supabase.from("customers").upsert(
     [
-      { name: customer.name, email: customer.email, tel: customer.tel, created_at: new Date() },
+      { first_name: customer.firstName, last_name: customer.lastName, email: customer.email, tel: customer.tel, created_at: new Date() },
     ],
     {
       onConflict: "email",
