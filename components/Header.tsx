@@ -42,10 +42,10 @@ export default function Header() {
         className="absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2"
       >
         <Image
-          src="/artinex_logo.png"
+          src="/artinex_logo.svg"
           alt="Artinex ロゴ"
-          width={120}
-          height={32}
+          width={160}
+          height={40}
           priority
         />
       </Link>
