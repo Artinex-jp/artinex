@@ -7,3 +7,7 @@ const nextConfig: NextConfig = {
 };
 
 export default nextConfig;
+
+export const config = {
+  matcher: ['/admin/:path*'],
+};
