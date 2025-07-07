@@ -1,106 +1,67 @@
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import Image from "next/image";
-import { supabase } from "@/lib/supabaseClient";
-import { formatDate } from "@/utils/formatDate";
-import LoadingOverlay from "@/components/LoadingOverlay";
-import Footer from "@/components/Footer";
-
-interface Event {
-  id: string;
-  title: string;
-  subtitle: string;
-  description: string;
-  images: any;
-  performances: any;
-}
+'use client';
 
 export default function HomePage() {
-  const [events, setEvents] = useState<Event[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const res = await fetch("/api/events");
-        if (!res.ok) throw new Error("Fetch failed");
-        const data = await res.json();
-        setEvents(data);
-      } catch (error) {
-        console.error("Failed to fetch events:", error);
-        setEvents([]);
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, []);
-
   return (
-    <div className="p-6 max-w-7xl mx-auto">
-        <div className="max-w-3xl mx-auto text-center mb-10 px-4">
-          <h1 className="text-3xl font-bold mb-2">Artinex Events</h1>
-          <p className="text-gray-600">
-            多彩なアーティストが奏でる、特別な一夜をご紹介します。
-          </p>
+    <main className="px-4 md:px-12 py-16 space-y-24 bg-gradient-to-br from-white to-gray-50">
+      {/* Hero Section */}
+      <section className="text-center space-y-6">
+        <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-gray-900 leading-tight">
+          芸術を、未来へ。
+        </h1>
+        <p className="text-lg md:text-xl text-gray-600 max-w-2xl mx-auto">
+          Artinexは、アーティスト同士をつなげ、芸術文化の新たな価値を創造します。
+        </p>
+        <div className="mt-6">
+          <a
+            href="/events"
+            className="inline-block px-6 py-3 text-white bg-blue-600 hover:bg-blue-700 rounded-xl text-lg font-semibold shadow-md"
+          >
+            イベントを見る
+          </a>
         </div>
-      {loading ? (
-        <LoadingOverlay />
-      ) : events.length === 0 ? (
-        <p>イベントが見つかりませんでした。</p>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {events.map((event) => {
-            if (event.images.length === 0) return (
-              <Link
-                key={event.id}
-                href={`/events/${event.id}`}
-                className="block bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 no-underline"
-              >
-                <div
-                  className="bg-gray-200 overflow-hidden h-48"
-                >
-                </div>
-                  <div className="p-4">
-                    <h2 className="text-xl font-semibold mb-1">{event.title}</h2>
-                    <p className="text-sm text-gray-500 mb-3">{event.subtitle}</p>
-                    <p className="text-sm text-right text-gray-500 mb-1">{event.performances[0].eventPlace.name}</p>
-                    <p className="text-sm text-right text-gray-500 mb-1">{formatDate(event.performances[0].date, "YYYY年M月D日(E)")}</p>
-                    <p className="text-gray-700 text-sm line-clamp-3 mb-4">{event.description}</p>
-                  </div>
-              </Link>
-            );
-            const img = event.images.length > 0 && event.images[0]
-            const publicUrl = event.images.length > 0 && supabase.storage.from('flyers').getPublicUrl(img.image_path).data.publicUrl;
-            if (publicUrl) return (
-              <Link
-                key={event.id}
-                href={`/events/${event.id}`}
-                className="block bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 no-underline"
-              >
-                <div
-                  className="bg-gray-200 overflow-hidden"
-                >
-                  <Image
-                    src={publicUrl}
-                    alt={event.title}
-                    width={600}
-                    height={300}
-                    className="w-full h-48 object-contain aspect-[16/9]"
-                  />
-                </div>
-                  <div className="p-4">
-                    <h2 className="text-xl font-semibold mb-1">{event.title}</h2>
-                    <p className="text-sm text-gray-500 mb-3">{event.subtitle}</p>
-                    <p className="text-sm text-right text-gray-500 mb-1">{event.performances[0].eventPlace.name}</p>
-                    <p className="text-sm text-right text-gray-500 mb-1">{formatDate(event.performances[0].date, "YYYY年M月D日(E)")}</p>
-                    <p className="text-gray-700 text-sm line-clamp-3 mb-4">{event.description}</p>
-                  </div>
-              </Link>
-            )
-          })
-          }
+      </section>
+
+      {/* About Section */}
+      <section className="max-w-5xl mx-auto space-y-4 text-center">
+        <h2 className="text-3xl font-semibold text-gray-800">Artinexについて</h2>
+        <p className="text-gray-600 text-md md:text-lg">
+          私たちは、アーティストと観客のあいだに豊かな出会いを生み出すプラットフォームを提供します。
+          音楽をはじめとした芸術活動の流通と価値創造をサポートするため、チケット販売、収益分配、アーカイブ配信など多角的なサービスを展開しています。
+        </p>
+      </section>
+
+      {/* Services Section */}
+      <section className="max-w-6xl mx-auto">
+        <h2 className="text-3xl font-semibold text-center text-gray-800 mb-10">私たちのサービス</h2>
+        <div className="grid gap-8 md:grid-cols-3">
+          <div className="bg-white shadow-lg rounded-2xl p-6">
+            <h3 className="text-xl font-semibold mb-2 text-blue-600">イベント管理</h3>
+            <p className="text-gray-600 text-sm">
+              公演の企画から予約・決済までを一括で管理。出演者情報、演目、会場などの詳細も柔軟にカスタマイズ可能です。
+            </p>
+          </div>
+          <div className="bg-white shadow-lg rounded-2xl p-6">
+            <h3 className="text-xl font-semibold mb-2 text-blue-600">チケット販売</h3>
+            <p className="text-gray-600 text-sm">
+              Stripe連携によるスムーズなオンライン決済。各パフォーマンスに合わせた多様なチケット種別に対応。
+            </p>
+          </div>
+          <div className="bg-white shadow-lg rounded-2xl p-6">
+            <h3 className="text-xl font-semibold mb-2 text-blue-600">アーカイブ配信</h3>
+            <p className="text-gray-600 text-sm">
+              公演の記録を高品質な映像で保存・共有。配信や販売にも対応し、芸術の資産化を推進します。
+            </p>
+          </div>
         </div>
-      )}
-    </div>
+      </section>
+
+      {/* Contact Section */}
+      <section className="text-center space-y-4">
+        <h2 className="text-3xl font-semibold text-gray-800">お問い合わせ</h2>
+        <p className="text-gray-600 text-md">
+          ご質問やご相談は、お気軽に <a href="mailto:info@artinex.jp" className="text-blue-600 underline">info@artinex.jp</a> までご連絡ください。
+        </p>
+      </section>
+    </main>
   );
 }
