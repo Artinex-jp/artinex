@@ -62,25 +62,25 @@ const ArtinexHomepage = () => {
               />
             </div>
             
-            <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight animate-fade-in-up">
+            <h1 className="text-3xl md:text-7xl font-bold text-white mb-6 leading-tight animate-fade-in-up">
               アーティストをつなげる
             </h1>
             
-            <p className="text-xl md:text-2xl text-white/90 mb-8 animate-fade-in-up animation-delay-300">
-              私たちは、分野を問わず、幅広くアーティスト同士を繋げ、<br/>
-              芸術文化を愛する方々に素晴らしいアートを届けるために活動をします
+            <p className="text-md md:text-2xl text-white/90 mb-8 animate-fade-in-up animation-delay-300">
+              私たちは、幅広くアーティスト同士を繋ぎ、<br/>
+              芸術文化を愛する方々にアートを届けます
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up animation-delay-600">
               <button 
                 onClick={() => scrollToSection('about')}
-                className="bg-[#D8D2AB] text-white border-2 border-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-white hover:text-[#D8D2AB] transition-all duration-300 transform hover:scale-105 shadow-lg"
+                className="bg-brand-secondary text-white border-2 border-white px-4 md:px-8 py-2 md:py-4 rounded-full font-semibold text-lg hover:bg-white hover:text-brand-secondary transition-all duration-300 transform hover:scale-105 shadow-lg"
               >
                 詳しく見る
               </button>
               <button 
                 onClick={() => router.push("/events")}
-                className="bg-[#5BADC1] border-2 border-white text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-white hover:text-[#5BADC1] transition-all duration-300 transform hover:scale-105"
+                className="bg-brand-primary border-2 border-white text-white px-4 md:px-8 py-2 md:py-4 rounded-full font-semibold text-lg hover:bg-white hover:text-brand-primary transition-all duration-300 transform hover:scale-105"
               >
                 コンサート情報
               </button>
@@ -102,10 +102,10 @@ const ArtinexHomepage = () => {
           </div>
 
           <div className="items-center">           
-              <div className="bg-[#D8D2AB]/20 p-8 rounded-3xl border border-[#D8D2AB]/30 w-[60%] mx-auto">
+              <div className="bg-brand-secondary/20 p-8 rounded-3xl border border-brand-secondary/30 w-[400px] max-w-[90%] mx-auto">
               <h3 className="text-2xl font-bold mb-4">私たちのミッション</h3>
                 <p className="text-lg leading-relaxed">
-                  優れた芸術家による個性的なイベントを企画し、新しい芸術体験の創造を通じて、芸術文化の発展に貢献します。従来の枠にとらわれない、革新的で感動的なイベントをお届けします。
+                  優れた芸術家による個性的なイベントを企画し、新しい芸術体験の創造を通じて、芸術文化の発展に貢献します。<br/>従来の枠にとらわれない、革新的で感動的なイベントをお届けします。
                 </p>
               </div>
           </div>
@@ -124,10 +124,10 @@ const ArtinexHomepage = () => {
             </p>
           </div>
 
-          <div className="bg-gradient-to-br from-[#5BADC1]/10 to-[#D8D2AB]/10 p-12 rounded-3xl text-center">
+          <div className="bg-gradient-to-br from-[#5BADC1]/10 to-[#D8D2AB]/10 p-8 rounded-3xl text-center">
             <Calendar className="w-16 h-16 text-[#5BADC1] mx-auto mb-6" />
             <h3 className="text-3xl font-bold mb-4 text-gray-800">イベント開催中</h3>
-            <p className="text-xl text-gray-600 mb-8">
+            <p className="text-lg text-gray-600 mb-8">
               チケットの予約・購入はこちらから
             </p>
             <button
@@ -144,10 +144,10 @@ const ArtinexHomepage = () => {
       <section id="contact" className="py-20 bg-gradient-to-br from-[#5BADC1] to-[#D8D2AB]">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
+            <h2 className="text-2xl md:text-5xl font-bold mb-6 text-white">
               お問い合わせ
             </h2>
-            <p className="text-xl text-white/90 max-w-3xl mx-auto">
+            <p className="text-md md:text-lg text-white/90 max-w-3xl mx-auto">
               ご質問、ご相談、コラボレーションのお申し込みなど、お気軽にお問い合わせください
             </p>
           </div>
