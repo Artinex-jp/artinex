@@ -9,6 +9,12 @@ module.exports = {
       fontFamily: {
         sans: ['"Noto Sans JP"', 'sans-serif'],
       },
+      colors: {
+        brand: {
+          primary: '#5BADC1',
+          secondary: '#D8D2AB',
+        },
+      },
     },
   },
   plugins: [],
