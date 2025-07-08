@@ -11,7 +11,7 @@ export default function Tokushoho() {
 
       <div className="max-w-4xl mx-auto px-4 py-8">
         <main className="bg-white rounded-lg shadow-lg p-8 md:p-12">
-          <h1 className="text-3xl md:text-4xl font-bold text-center mb-10 text-gray-800 border-b-4 border-brand-primary pb-6">
+          <h1 className="text-xl md:text-2xl font-bold text-center mb-10 text-gray-800 border-b-4 border-brand-primary pb-6">
             特定商取引法に基づく表記
           </h1>
           

@@ -38,9 +38,9 @@ export default function HomePage() {
   return (
     <div className="p-6 max-w-7xl mx-auto">
         <div className="max-w-3xl mx-auto text-center mb-10 px-4">
-          <h1 className="text-3xl font-bold mb-2">Artinex Events</h1>
+          <h1 className="text-3xl font-bold mb-2">Artinex's Events</h1>
           <p className="text-gray-600">
-            多彩なアーティストが奏でる、特別な一夜をご紹介します。
+            多彩なアーティストが奏でる、特別なイベントをご紹介します。
           </p>
         </div>
       {loading ? (
