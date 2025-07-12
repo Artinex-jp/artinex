@@ -10,7 +10,7 @@ export default function Tokushoho() {
         <meta property="og:title" content="特定商取引法に基づく表記｜Artinex" />
         <meta property="og:description" content="合同会社Artinexの特定商取引法に基づく表記" />
         <meta property="og:url" content="https://artinex.jp/tokushoho" />
-        <meta property="og:image" content="/artinex_ogp.webp" />
+        <meta property="og:image" content="https://www.artinex.jp/artinex_ogp.webp" />
       </Head>
 
       <div className="max-w-4xl mx-auto px-4 py-8">

@@ -18,7 +18,7 @@ export default function Company() {
         <meta property="og:title" content="会社情報｜Artinex" />
         <meta property="og:description" content="合同会社Artinexの会社情報。芸術文化をアーティスト視点で盛り上げることを目的として設立。" />
         <meta property="og:url" content="https://artinex.jp/company" />
-        <meta property="og:image" content="/artinex_ogp.webp" />
+        <meta property="og:image" content="https://www.artinex.jp/artinex_ogp.webp" />
       </Head>
 
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50">
