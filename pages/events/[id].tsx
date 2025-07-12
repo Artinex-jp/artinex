@@ -11,93 +11,105 @@ import LoadingOverlay from '@/components/LoadingOverlay';
 import Head from 'next/head';
 
 interface EventData {
-  id: string
-  title: string
-  subtitle:string
-  description?: string
+  id: string;
+  title: string;
+  subtitle: string;
+  description?: string;
   images?: {
-    id: string
-    imagePath: string
-    altText?: string
-  }[]
+    id: string;
+    imagePath: string;
+    altText?: string;
+  }[];
+  isHostedByArtinex?: boolean;
+  sellTicketsDirectly?: boolean;
+  allowBankTransfer?: boolean;
+  allowOnlinePayment?: boolean;
+  allowCashOnSite?: boolean;
+  externalReservationUrl?: string;
   performances: {
-    id: string
-    title: string
-    date: string
-    startTime?: string
-    openTime: string
+    id: string;
+    title: string;
+    date: string;
+    startTime?: string;
+    openTime: string;
     eventPlace: {
-      id: string
-      name: string
-      prefecture: string
-      city: string
-      address1?: string
-      address2?: string
-      googleMapEmbedUrl?: string 
-    }
+      id: string;
+      name: string;
+      prefecture: string;
+      city: string;
+      address1?: string;
+      address2?: string;
+      googleMapEmbedUrl?: string;
+    };
     performanceItems: {
       item: {
-        id: string
-        type: string
-        title: string
-        price: number
-        note: string
-      }
-    }[]
+        id: string;
+        type: string;
+        title: string;
+        price: number;
+        note: string;
+      };
+    }[];
     performancePieces: {
-      id: string
-      notes?: string
+      id: string;
+      notes?: string;
       piece: {
-        id: string
-        title: string
-        subtitle: string
+        id: string;
+        title: string;
+        subtitle: string;
         arrangementSource?: {
-          id: string
-          title: string
-          subtitle: string
+          id: string;
+          title: string;
+          subtitle: string;
           composer?: {
-            id: string
-            nationality: string
-            middleName?: string
-            lastName: string
-            firstName: string
-          }
-        }
+            id: string;
+            nationality: string;
+            middleName?: string;
+            lastName: string;
+            firstName: string;
+          };
+        };
         suiteChildren?: {
-          id: string
-          title: string
-          subtitle: string
-          orderInGroup: number
-        }[]
+          id: string;
+          title: string;
+          subtitle: string;
+          orderInGroup: number;
+        }[];
         composer?: {
-          id: string
-          nationality: string
-          middleName?: string
-          lastName: string
-          firstName: string
-        }
-      }
+          id: string;
+          nationality: string;
+          middleName?: string;
+          lastName: string;
+          firstName: string;
+        };
+      };
       performancePieceArtists: {
-        id: string
-        role: string
+        id: string;
+        role: string;
         artist: {
-          id: string
-          nationality: string
-          middleName?: string
-          lastName: string
-          firstName: string
-        }
-      }[]
-    }[]
-  }[]
+          id: string;
+          nationality: string;
+          middleName?: string;
+          lastName: string;
+          firstName: string;
+        };
+      }[];
+    }[];
+  }[];
 }
 
 type OrderItem = { itemId: string; quantity: number };
 type ReservationForm = {
-  customer: { lastName: string; firstName: string; email: string; tel: string };
+  customer: {
+    lastName: string;
+    firstName: string;
+    email: string;
+    tel: string;
+  };
   paymentMethod: string;
   amountTotal: number;
   orderItem: OrderItem[];
+  message?: string;
 };
 
 export default function EventDetailPage() {
@@ -106,7 +118,6 @@ export default function EventDetailPage() {
   const [event, setEvent] = useState<EventData | null>(null)
   const [loading, setLoading] = useState(true)
   const [showModal, setShowModal] = useState(false);
-  const [step, setStep] = useState<"form" | "confirm" | "done">("form");
   const defaultCustomer = {
     lastName: "",
     firstName: "",
@@ -292,6 +303,18 @@ export default function EventDetailPage() {
             >
               予約・購入
             </button>
+            {event.externalReservationUrl && (
+            <div className="mt-4 text-center">
+              <a
+                href={`${event.externalReservationUrl}${event.externalReservationUrl.includes('?') ? '&' : '?'}ref=artinex`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block bg-white text-gray-500 rounded transition no-underline cursor-pointer"
+              >
+                公式サイトから予約
+              </a>
+            </div>
+          )}
           </div>
 
           {/* プログラム */}
@@ -368,7 +391,9 @@ export default function EventDetailPage() {
             }
         </div>
       ))}
-
+      <div className='text-center mb-4'>
+        {event.isHostedByArtinex ? "主催：合同会社Artinex" : "この公演は、Artinexの主催ではありません"}
+      </div>
       <div>
         {showModal && (
           <ReservationModal

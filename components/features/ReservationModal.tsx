@@ -10,6 +10,7 @@ type ReservationForm = {
   paymentMethod: string;
   amountTotal: number;
   orderItem: OrderItem[];
+	message?: string;
 };
 
 export default function ReservationModal({
@@ -88,20 +89,26 @@ export default function ReservationModal({
 		}
 	};
 
+	const availableMethods = [
+		event.allowBankTransfer && "銀行振り込み",
+		event.allowCashOnSite && "当日現金支払い",
+		event.allowOnlinePayment && "オンライン決済",
+	].filter(Boolean);
+
   return (
     <div
 			className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50"
 			onClick={onClose}
 		>
       <div
-				className="bg-white p-4 rounded max-w-xl w-full"
+				className="bg-white p-4 rounded max-w-2xl w-full"
 				onClick={e => e.stopPropagation()}
 			>
 				{isLoading && <LoadingOverlay />}
         {step === "form" && (
           <>
             <h2 className="text-xl font-bold mb-4">予約フォーム</h2>
-						<div className="grid grid-cols-[7em_1fr] gap-2 items-start">
+						<div className="grid grid-cols-[7em_1fr] gap-2 items-center">
 							<label>お名前</label>
 							<div className="flex gap-4">
 								<input
@@ -135,49 +142,62 @@ export default function ReservationModal({
 									onChange={e => setForm(f => ({ ...f, customer: { ...f.customer, tel: e.target.value } }))}
 								/>
 							</div>
-							<label className="block font-semibold mb-1">お支払い方法</label>
-							<div className="flex flex-col md:flex-row gap-2">
-								{["銀行振り込み", "当日現金支払い", "オンライン決済"].map((method) => (
-								<label key={method} className="block">
-									<input
-										type="radio"
-										name="paymentMethod"
-										value={method}
-										checked={form.paymentMethod === method}
-										onChange={() => setForm(f => ({ ...f, paymentMethod: method }))}
-										className="hidden"
-									/>
+							{availableMethods.length > 0 && (
+								<>
+									<label className="block font-semibold mb-1">お支払い方法</label>
+									<div className="flex flex-col md:flex-row gap-2">
+										{availableMethods.map((method) => (
+											<label key={method} className="block">
+												<input
+													type="radio"
+													name="paymentMethod"
+													value={method}
+													checked={form.paymentMethod === method}
+													onChange={() => setForm(f => ({ ...f, paymentMethod: method }))}
+													className="hidden"
+												/>
 
-									<div
-										className={`flex items-center justify-between px-4 py-2 rounded cursor-pointer border transition
-											${form.paymentMethod === method
-												? "bg-green-50 border-green-500 text-green-800"
-												: "bg-white border-gray-300 text-gray-800 hover:bg-gray-100"}`}
-									>
-										<div className="flex items-center gap-3">
-											<div
-												className={`w-5 h-5 flex items-center justify-center rounded-full border-2 transition
-													${form.paymentMethod === method ? "bg-green-500 border-green-500" : "border-gray-400"}`}
-											>
-												{form.paymentMethod === method && (
-													<svg
-														className="w-3 h-3 text-white"
-														fill="none"
-														stroke="currentColor"
-														strokeWidth="3"
-														viewBox="0 0 24 24"
-													>
-														<path d="M5 13l4 4L19 7" />
-													</svg>
-												)}
-											</div>
-											<span className="text-sm">{method}</span>
-										</div>
+												<div
+													className={`flex items-center justify-between px-4 py-2 rounded cursor-pointer border transition
+														${form.paymentMethod === method
+															? "bg-green-50 border-green-500 text-green-800"
+															: "bg-white border-gray-300 text-gray-800 hover:bg-gray-100"}`}
+												>
+													<div className="flex items-center gap-3">
+														<div
+															className={`w-5 h-5 flex items-center justify-center rounded-full border-2 transition
+																${form.paymentMethod === method ? "bg-green-500 border-green-500" : "border-gray-400"}`}
+														>
+															{form.paymentMethod === method && (
+																<svg
+																	className="w-3 h-3 text-white"
+																	fill="none"
+																	stroke="currentColor"
+																	strokeWidth="3"
+																	viewBox="0 0 24 24"
+																>
+																	<path d="M5 13l4 4L19 7" />
+																</svg>
+															)}
+														</div>
+														<span className="text-sm">{method}</span>
+													</div>
+												</div>
+											</label>
+										))}
 									</div>
-								</label>
-								))}
+								</>
+							)}
+							<label>メッセージ</label>
+							<div>
+								<textarea
+									placeholder="ご質問や連絡事項などがあればご記入ください"
+									className="border w-full mt-2"
+									rows={3}
+									value={(form as any).message || ""}
+									onChange={e => setForm(f => ({ ...f, message: e.target.value }))}
+								/>
 							</div>
-
 						</div>
 						<hr className="my-2" />
 
@@ -187,7 +207,7 @@ export default function ReservationModal({
 								const count = quantities[item.id] || 0;
 								return (
 									<>
-										<div key={item.id} className="flex justify-between items-center mb-2 text-sm">
+										<div key={item.id} className="flex justify-between items-center mb-2 text-sm space-x-2 md:mx-4">
 											<div>
 												<div>¥{item.price.toLocaleString()}</div>
 												<Badge>{item.type}</Badge>
@@ -274,6 +294,7 @@ export default function ReservationModal({
             <p className="mb-2">メール：{form.customer.email}</p>
             <p className="mb-2">電話番号：{form.customer.tel}</p>
             <p className="mb-2">支払方法：{form.paymentMethod}</p>
+						<p className="mb-2">メッセージ：{form.message || "【未入力】"}</p>
             <hr className="my-2" />
             {form.orderItem.map((oi: any) => {
               const item = event.performances
