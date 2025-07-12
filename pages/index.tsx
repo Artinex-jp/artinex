@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Head from 'next/head';
 import { ChevronDown, Music, Users, Calendar, ArrowRight, Play, Star, Award, Heart } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -44,7 +45,15 @@ const ArtinexHomepage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-
+      <Head>
+        <title>ホーム｜Artinex</title>
+        <meta name="description" content="合同会社アーティネクス・公式ホームページ。私たちは、幅広くアーティスト同士を繋ぎ、芸術文化を愛する方々にアートを届けます" />
+        <meta property="og:title" content="ホーム｜Artinex" />
+        <meta property="og:description" content="合同会社アーティネクス・公式ホームページ。私たちは、幅広くアーティスト同士を繋ぎ、芸術文化を愛する方々にアートを届けます" />
+        <meta property="og:url" content="https://artinex.jp/" />
+        {/* <meta property="og:image" content="https://example.com/og-image.jpg" /> */}
+        <meta property="og:type" content="website" />
+      </Head>
 
       {/* Hero Section */}
       <section id="home" className="relative h-screen bg-gradient-to-br from-[#5BADC1] via-[#4A9BB5] to-[#D8D2AB] overflow-hidden">

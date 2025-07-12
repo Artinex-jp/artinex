@@ -4,6 +4,7 @@ import { supabase } from '@/lib/supabaseClient';
 import { formatFullName } from '@/utils/formatFullName';
 import { toCamelCase } from '@/utils/toCamelCase';
 import { DragDropContext, Draggable, Droppable, DropResult } from '@hello-pangea/dnd';
+import Head from 'next/head';
 
 export default function PerformanceDetailPage() {
   const router = useRouter();
@@ -100,6 +101,16 @@ export default function PerformanceDetailPage() {
 
   return (
     <div className="max-w-3xl mx-auto p-6 space-y-8">
+      <Head>
+        <title>公演詳細｜Artinex</title>
+        <meta name="description" content="公演詳細"/>
+        <meta name="robots" content="noindex, nofollow" />
+        <link rel="canonical" href={"https://artinex.jp/admin/performances/" + performance.id}/>
+        <meta property="og:title" content="公演詳細｜Artinex" />
+        <meta property="og:description" content="公演詳細"/>
+        <meta property="og:url" content={"https://artinex.jp/admin/performances/" + performance.id} />
+        <meta property="og:type" content="website" />
+      </Head>
       <h1 className="text-2xl font-bold">公演詳細</h1>
 
       {performance && (

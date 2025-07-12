@@ -15,6 +15,10 @@ export default function Company() {
         <title>会社情報 | Artinex</title>
         <meta name="description" content="合同会社Artinexの会社情報。芸術文化をアーティスト視点で盛り上げることを目的として設立。" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta property="og:title" content="会社情報｜Artinex" />
+        <meta property="og:description" content="合同会社Artinexの会社情報。芸術文化をアーティスト視点で盛り上げることを目的として設立。" />
+        <meta property="og:url" content="https://artinex.jp/company" />
+        {/* <meta property="og:image" content="https://example.com/og-image.jpg" /> */}
       </Head>
 
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50">

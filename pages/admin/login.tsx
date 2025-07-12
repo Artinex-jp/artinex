@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/router'
 import { createClient } from '@supabase/supabase-js'
 import { createPagesBrowserClient } from '@supabase/auth-helpers-nextjs'
+import Head from 'next/head'
 
 const supabase = createPagesBrowserClient()
 
@@ -34,6 +35,16 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-200 px-4">
+      <Head>
+        <title>管理者ログイン｜Artinex</title>
+        <meta name="description" content="管理者ログイン"/>
+        <meta name="robots" content="noindex, nofollow" />
+        <link rel="canonical" href="https://artinex.jp/admin/login" />
+        <meta property="og:title" content="管理者ログイン｜Artinex" />
+        <meta property="og:description" content="管理者ログインページ"/>
+        <meta property="og:url" content="https://artinex.jp/admin/login" />
+        <meta property="og:type" content="website" />
+      </Head>
       <div className="bg-white shadow-2xl rounded-2xl p-8 w-full max-w-md">
         <h1 className="text-3xl font-semibold text-center text-gray-800 mb-6">ログイン</h1>
         <form onSubmit={handleLogin} className="space-y-4">
