@@ -8,6 +8,7 @@ import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { supabase } from '@/lib/supabaseClient'
 import LoadingOverlay from '@/components/LoadingOverlay';
+import Head from 'next/head';
 
 interface EventData {
   id: string
@@ -178,6 +179,15 @@ export default function EventDetailPage() {
 
   return (
     <div>
+      <Head>
+        <title>{event.title}｜Artinex</title>
+        <meta name="description" content={event.title + event.subtitle ? "／" + event.subtitle : ""}/>
+        <link rel="canonical" href={"https://artinex.jp/events/" + event.id} />
+        <meta property="og:title" content="イベント情報｜Artinex" />
+        <meta property="og:description" content="Artinexイベント情報。多彩なアーティストが奏でる、特別なイベントをご紹介します。"/>
+        <meta property="og:url" content="https://artinex.jp/payment/events" />
+        <meta property="og:type" content="website" />
+      </Head>
       <div className="bg-gray-100 w-full">
         <div className="flex-col mx-auto max-w-screen-md w-full mb-4 gap-6 p-6">
           <div>

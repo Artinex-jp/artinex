@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { toCamelCase } from '@/utils/toCamelCase';
+import Head from 'next/head';
 
 export default function AdminIndexPage() {
   const [events, setEvents] = useState<any[]>([]);
@@ -14,6 +15,11 @@ export default function AdminIndexPage() {
 
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-6">
+      <Head>
+        <title>管理者｜Artinex</title>
+        <meta name="description" content="管理者"/>
+        <meta name="robots" content="noindex, nofollow" />
+      </Head>
       <h1 className="text-2xl font-bold">管理メニュー</h1>
 
       <section>

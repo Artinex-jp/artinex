@@ -5,6 +5,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { formatDate } from "@/utils/formatDate";
 import LoadingOverlay from "@/components/LoadingOverlay";
 import Footer from "@/components/Footer";
+import Head from "next/head";
 
 interface Event {
   id: string;
@@ -37,6 +38,15 @@ export default function HomePage() {
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
+      <Head>
+        <title>イベント情報｜Artinex</title>
+        <meta name="description" content="Artinexイベント情報。多彩なアーティストが奏でる、特別なイベントをご紹介します。"/>
+        <link rel="canonical" href="https://artinex.jp/events"/>
+        <meta property="og:title" content="イベント情報｜Artinex" />
+        <meta property="og:description" content="Artinexイベント情報。多彩なアーティストが奏でる、特別なイベントをご紹介します。"/>
+        <meta property="og:url" content="https://artinex.jp/payment/events" />
+        <meta property="og:type" content="website" />
+      </Head>
         <div className="max-w-3xl mx-auto text-center mb-10 px-4">
           <h1 className="text-3xl font-bold mb-2">Artinex's Events</h1>
           <p className="text-gray-600">
