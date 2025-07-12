@@ -51,7 +51,7 @@ const ArtinexHomepage = () => {
         <meta property="og:title" content="ホーム｜Artinex" />
         <meta property="og:description" content="合同会社アーティネクス・公式ホームページ。私たちは、幅広くアーティスト同士を繋ぎ、芸術文化を愛する方々にアートを届けます" />
         <meta property="og:url" content="https://artinex.jp/" />
-        <meta property="og:image" content="/artinex_ogp.webp" />
+        <meta property="og:image" content="https://www.artinex.jp/artinex_ogp.webp" />
         <meta property="og:type" content="website" />
       </Head>
 

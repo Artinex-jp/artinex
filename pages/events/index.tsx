@@ -46,7 +46,7 @@ export default function HomePage() {
         <meta property="og:description" content="Artinexイベント情報。多彩なアーティストが奏でる、特別なイベントをご紹介します。"/>
         <meta property="og:url" content="https://artinex.jp/payment/events" />
         <meta property="og:type" content="website" />
-        <meta property="og:image" content="/artinex_ogp.webp" />
+        <meta property="og:image" content="https://www.artinex.jp/artinex_ogp.webp" />
       </Head>
         <div className="max-w-3xl mx-auto text-center mb-10 px-4">
           <h1 className="text-3xl font-bold mb-2">Artinex's Events</h1>
