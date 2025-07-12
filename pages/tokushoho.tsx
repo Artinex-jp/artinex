@@ -12,15 +12,6 @@ export default function Tokushoho() {
         <meta property="og:url" content="https://artinex.jp/tokushoho" />
         {/* <meta property="og:image" content="https://example.com/og-image.jpg" /> */}
       </Head>
-            <Head>
-        <title>会社情報 | Artinex</title>
-        <meta name="description" content="合同会社Artinexの会社情報。芸術文化をアーティスト視点で盛り上げることを目的として設立。" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta property="og:title" content="会社情報｜Artinex" />
-        <meta property="og:description" content="同会社アーティネクス・公式ホームページ。私たちは、幅広くアーティスト同士を繋ぎ、芸術文化を愛する方々にアートを届けます" />
-        <meta property="og:url" content="https://artinex.jp/" />
-        {/* <meta property="og:image" content="https://example.com/og-image.jpg" /> */}
-      </Head>
 
       <div className="max-w-4xl mx-auto px-4 py-8">
         <main className="bg-white rounded-lg shadow-lg p-8 md:p-12">

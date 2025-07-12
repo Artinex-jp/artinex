@@ -105,11 +105,6 @@ export default function PerformanceDetailPage() {
         <title>公演詳細｜Artinex</title>
         <meta name="description" content="公演詳細"/>
         <meta name="robots" content="noindex, nofollow" />
-        <link rel="canonical" href={"https://artinex.jp/admin/performances/" + performance.id}/>
-        <meta property="og:title" content="公演詳細｜Artinex" />
-        <meta property="og:description" content="公演詳細"/>
-        <meta property="og:url" content={"https://artinex.jp/admin/performances/" + performance.id} />
-        <meta property="og:type" content="website" />
       </Head>
       <h1 className="text-2xl font-bold">公演詳細</h1>
 

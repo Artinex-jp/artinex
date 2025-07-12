@@ -104,11 +104,6 @@ export default function CustomersPage() {
         <title>顧客一覧｜Artinex</title>
         <meta name="description" content="顧客一覧"/>
         <meta name="robots" content="noindex, nofollow" />
-        <link rel="canonical" href="https://artinex.jp/admin/customers" />
-        <meta property="og:title" content="顧客一覧｜Artinex" />
-        <meta property="og:description" content="顧客一覧"/>
-        <meta property="og:url" content="https://artinex.jp/admin/customers" />
-        <meta property="og:type" content="website" />
       </Head>
       <h1 className="text-2xl font-bold mb-4">顧客一覧</h1>
       {customers.map((customer) => {
