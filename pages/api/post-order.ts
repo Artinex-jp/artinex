@@ -10,10 +10,16 @@ const supabase = createClient(
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") return res.status(405).end();
 
-  const { customer, paymentMethod, amountTotal, orderItem } = req.body;
+  const { customer, paymentMethod, amountTotal, orderItem, message } = req.body;
   const { data: customerData, error: insertCustomerError } = await supabase.from("customers").upsert(
     [
-      { first_name: customer.firstName, last_name: customer.lastName, email: customer.email, tel: customer.tel, created_at: new Date() },
+      {
+        first_name: customer.firstName,
+        last_name: customer.lastName,
+        email: customer.email,
+        tel: customer.tel,
+        created_at: new Date()
+      },
     ],
     {
       onConflict: "email",
@@ -25,7 +31,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   // 注文作成
   const orderId = uuidv4();
   const { data: orderData, error: insertOrderError } = await supabase.from("orders").insert([
-    { id: orderId, customer_id: customerData.id, payment_method: paymentMethod, amount_total: amountTotal, created_at: new Date() },
+    {
+      id: orderId,
+      customer_id: customerData.id,
+      payment_method: paymentMethod,
+      amount_total: amountTotal,
+      message,
+      created_at: new Date()
+    },
   ]).select().single();
   if (insertOrderError) return res.status(500).json({ error: insertOrderError.message });
 
