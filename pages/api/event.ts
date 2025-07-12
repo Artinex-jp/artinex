@@ -15,9 +15,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
   const { data, error } = await supabase
     .rpc('get_event_full_data', { event_id: id })
-	console.log("API /api/event called with id:", req.query.id);
-	console.log(toCamelCase(data?.[0] ?? {}));
-	console.log(error);
+
   const result = toCamelCase(data?.[0] ?? {})
   if (error) return res.status(500).json({ error: error.message })
   return res.status(200).json(result)

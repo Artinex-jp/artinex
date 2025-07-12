@@ -28,7 +28,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 					)
 				)
 			)
-    `);
+    `)
+    .not('archived', 'is', true)
+    .not('draft', 'is', true);
 
   if (error) {
     return res.status(500).json({ error: error.message });

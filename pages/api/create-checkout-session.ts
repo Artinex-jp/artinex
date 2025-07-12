@@ -17,7 +17,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   const { customer, orderItems, order } = req.body;
-  console.log(req.body)
 
   // 2. Stripe用のline_itemsの作成
   const line_items = orderItems.map((oi: any) => ({
