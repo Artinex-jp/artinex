@@ -26,7 +26,31 @@ export default function HomePage() {
         const res = await fetch("/api/events");
         if (!res.ok) throw new Error("Fetch failed");
         const data = await res.json();
-        setEvents(data);
+        const sortedAndFiltered = [...data]
+          .filter((event: any) => {
+            const times = event.performances?.map((p: any) => {
+              const dateStr = `${p.date}T${p.startTime || '00:00:00'}`;
+              return new Date(dateStr).getTime();
+            }) || [];
+
+            if (times.length === 0) return false;
+
+            const latest = Math.max(...times);
+            const now = new Date();
+            return latest >= now.getTime();
+          })
+          .sort((a, b) => {
+            const getEarliest = (event: any) => {
+              const timestamps = event.performances?.map((p: any) => {
+                const dateStr = `${p.date}T${p.startTime || '00:00:00'}`;
+                return new Date(dateStr).getTime();
+              }) || [];
+              return timestamps.length ? Math.min(...timestamps) : Infinity;
+            };
+            return getEarliest(a) - getEarliest(b);
+          });
+
+        setEvents(sortedAndFiltered);
       } catch (error) {
         console.error("Failed to fetch events:", error);
         setEvents([]);

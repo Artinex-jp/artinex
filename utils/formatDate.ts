@@ -27,8 +27,6 @@ export function formatDate(raw: string, format: string): string {
   const map = Object.fromEntries(dt.map(({ type, value }) => [type, value]));
   const dayNames = ["日", "月", "火", "水", "木", "金", "土"];
 
-  console.log(map)
-
   return format
     .replace(/YYYY/g, map.year ?? "")
     .replace(/MM/g, map.month ?? "")

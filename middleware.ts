@@ -11,11 +11,6 @@ export async function middleware(req: NextRequest) {
     error
   } = await supabase.auth.getUser();
 
-  console.log(user)
-  console.log(error)
-  console.log("🔐 Supabase user in middleware:", user);
-  console.log("🍪 Cookies:", req.cookies.getAll());
-
   const pathname = req.nextUrl.pathname;
 
   // /admin以下かつ /admin/login ではない → 認証チェック
