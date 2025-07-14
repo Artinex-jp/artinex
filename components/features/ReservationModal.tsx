@@ -205,21 +205,38 @@ export default function ReservationModal({
 							p.performanceItems.map((pi: any) => {
 								const item = pi.item;
 								const count = quantities[item.id] || 0;
+								const remaining = Math.max(item.remainingQuantity, 0);
+
+								if (item.purchaseAccess !== 'public') return null;
+
+								const isSoldOut = remaining === 0;
+								const isLowStock = remaining <= 10;
+								const canIncrement = count < Math.min(remaining, 20);
+
 								return (
-									<>
-										<div key={item.id} className="flex justify-between items-center mb-2 text-sm space-x-2 md:mx-4">
+									<div key={item.id} className="mb-4 md:mx-4">
+										{isSoldOut && (
+											<div className="text-red-600 font-bold mb-1">SOLD OUT</div>
+										)}
+										{!isSoldOut && isLowStock && (
+											<div className="text-red-600 font-semibold">
+												残り{remaining}席
+											</div>
+										)}
+
+										<div className={`flex justify-between items-center text-sm space-x-2 ${isSoldOut ? 'opacity-50' : ''}`}>
 											<div>
 												<div>¥{item.price.toLocaleString()}</div>
 												<Badge>{item.type}</Badge>
 											</div>
 											<div>
-												<div>{formatDate(p.date, "YYYY年M月D日")}　{formatDate(p.startTime, "hh:mm開演")}</div>
+												<div>{formatDate(p.date, "YYYY年M月D日")} {formatDate(p.startTime, "hh:mm開演")}</div>
 												<div>{p.eventPlace.name}</div>
 											</div>
 											<div className="flex items-center space-x-1">
 												<button
 													type="button"
-													className={`flex items-center justify-center w-8 h-8 border border-gray-500 bg-white text-gray-800 font-bold rounded hover:bg-gray-100 disabled:bg-gray-100 disabled:border-gray-200`}
+													className="flex items-center justify-center w-8 h-8 border border-gray-500 bg-white text-gray-800 font-bold rounded hover:bg-gray-100 disabled:bg-gray-100 disabled:border-gray-200"
 													disabled={count <= 0}
 													onClick={() =>
 														setQuantities((q) => ({
@@ -227,30 +244,31 @@ export default function ReservationModal({
 															[item.id]: Math.max(0, (q[item.id] || 0) - 1),
 														}))
 													}
-													>
+												>
 													−
 												</button>
 												<span className="w-8 text-center">{count}枚</span>
 												<button
 													type="button"
-													className={`flex items-center justify-center w-8 h-8 border border-gray-500 bg-white text-gray-800 font-bold rounded hover:bg-gray-100 disabled:bg-gray-100 disabled:border-gray-200`}
-													disabled={count >= 20}
+													className="flex items-center justify-center w-8 h-8 border border-gray-500 bg-white text-gray-800 font-bold rounded hover:bg-gray-100 disabled:bg-gray-100 disabled:border-gray-200"
+													disabled={!canIncrement || isSoldOut}
 													onClick={() =>
 														setQuantities((q) => ({
 															...q,
-															[item.id]: Math.min(20, (q[item.id] || 0) + 1),
+															[item.id]: count + 1,
 														}))
 													}
-													>
+												>
 													＋
 												</button>
 											</div>
 										</div>
-										<hr/>
-									</>
+										<hr className="mt-2" />
+									</div>
 								);
 							})
 						)}
+
 
 
 						<div className="text-right font-bold mt-4">
