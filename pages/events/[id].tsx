@@ -53,6 +53,7 @@ interface EventData {
     performancePieces: {
       id: string;
       notes?: string;
+      orderInProgram?: number;
       piece: {
         id: string;
         title: string;
@@ -320,7 +321,9 @@ export default function EventDetailPage() {
           {/* プログラム */}
           <div>
             <h3 className="text-lg font-semibold mb-3">プログラム</h3>
-            {perf.performancePieces?.map((pp) => (
+            {[...perf.performancePieces]
+            .sort((a, b) => (a.orderInProgram ?? 0) - (b.orderInProgram ?? 0))
+            .map((pp) => (
               <div key={pp.id} className="bg-gray-50 border-l-4 border-blue-400 pl-4 pr-2 py-2 mb-4 rounded">
                 <div className="grid grid-cols-[1fr_auto] gap-4">
                   <div className="text-base font-semibold min-w-[60]">
