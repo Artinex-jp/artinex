@@ -9,6 +9,7 @@ import 'slick-carousel/slick/slick-theme.css';
 import { supabase } from '@/lib/supabaseClient'
 import LoadingOverlay from '@/components/LoadingOverlay';
 import Head from 'next/head';
+import { X } from 'lucide-react'
 
 interface EventData {
   id: string;
@@ -119,6 +120,8 @@ export default function EventDetailPage() {
   const [event, setEvent] = useState<EventData | null>(null)
   const [loading, setLoading] = useState(true)
   const [showModal, setShowModal] = useState(false);
+  const [modalImageUrl, setModalImageUrl] = useState<string | null>(null);
+
   const defaultCustomer = {
     lastName: "",
     firstName: "",
@@ -209,7 +212,11 @@ export default function EventDetailPage() {
                   {event.images.map((img) => {
                     const publicUrl = supabase.storage.from('flyers').getPublicUrl(img.imagePath).data.publicUrl;
                     return (
-                      <div key={img.id} className="w-full h-full flex items-center justify-center">
+                      <div
+                        key={img.id}
+                        className="w-full h-full flex items-center justify-center cursor-pointer"
+                        onClick={() => setModalImageUrl(publicUrl)}
+                      >
                         <img
                           src={publicUrl}
                           alt={img.altText || ''}
@@ -409,6 +416,28 @@ export default function EventDetailPage() {
           />
         )}
       </div>
+      {modalImageUrl && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50"
+          onClick={() => setModalImageUrl(null)}
+        >
+          <div
+            className="relative max-w-6xl w-full h-full flex items-center justify-center p-4"
+          >
+            <X
+              size={36}
+              className="absolute top-6 right-6 text-white cursor-pointer hover:opacity-70 z-50"
+              onClick={() => setModalImageUrl(null)}
+            />
+            <img
+              src={modalImageUrl}
+              alt="拡大画像"
+              className="max-w-full max-h-full object-contain"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
+        </div>
+      )}
     </div>
   )
 }
